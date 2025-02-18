@@ -194,87 +194,36 @@ class _LoadImagePannerViewState extends State<LoadImagePannerView> {
               ),
             ),
           ),
-
-          // 5. Container NEXT
-          Positioned(
-            top: MediaQuery.of(context).size.height *
-                0.84,
-            right: 16,
-            child: Align(
-                alignment: Alignment.bottomRight,
-                child: GestureDetector(
-                  onTap: () {
-                    // Lấy trang hiện tại của _pageController1 và thay đổi trang của tất cả PageView
-                    int currentPage = _pageController1.page?.toInt() ?? 0;
-                    _pageController1.jumpToPage(currentPage + 1);
-                    _pageController2.jumpToPage(currentPage + 1);
-                    _pageController3.jumpToPage(currentPage + 1);
-                    if (currentPage == 2) {
-                      Get.to(() => const LoginView());
-                    }
-                  },
-                  child: const Text('Next', style: TextStyle(
-                      fontSize: 24,
-                      color: Color(0xff6D2323),
-                      fontFamily: 'Jost',
-                      fontWeight: FontWeight.w600),),
-                )),
-          ),
           Positioned(
             top: MediaQuery.of(context).size.height * 0.84,
-            left: 16,
-            child: Offstage(
-              offstage: (_pageController1.page?.toInt() ?? 0) == 0, // Ẩn khi currentPage == 0
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: GestureDetector(
-                  onTap: () {
-                    int currentPage = _pageController1.page?.toInt() ?? 0;
-                    if (currentPage > 0) {
-                      _pageController1.jumpToPage(currentPage - 1);
-                      _pageController2.jumpToPage(currentPage - 1);
-                      _pageController3.jumpToPage(currentPage - 1);
-                    }
-                  },
-                  child: const Text(
-                    'Prev',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Color(0xffC4C4C4),
-                      fontFamily: 'Jost',
-                      fontWeight: FontWeight.w600,
-                    ),
+            right: 16,
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: GestureDetector(
+                onTap: () {
+                  int currentPage = _pageController1.page?.toInt() ?? 0;
+                  if (currentPage < imagesPanner.length - 1) {
+                    setState(() { // Cập nhật UI
+                      _pageController1.jumpToPage(currentPage + 1);
+                      _pageController2.jumpToPage(currentPage + 1);
+                      _pageController3.jumpToPage(currentPage + 1);
+                    });
+                  } else {
+                    Get.to(() => const LoginView());
+                  }
+                },
+                child: const Text(
+                  'Next',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Color(0xff6D2323),
+                    fontFamily: 'Jost',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ),
           ),
-
-          // Positioned(
-          //   top: -30, // Vị trí của đoạn văn bản
-          //   right: 16,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(20.0),
-          //     child: InkWell(
-          //       onTap: () {
-          //         Get.to(() => const LoginView());
-          //       },
-          //       child: const Column(
-          //         crossAxisAlignment: CrossAxisAlignment.center,
-          //         children: [
-          //           Text(
-          //             'Skip',
-          //             style: TextStyle(
-          //                 fontSize: 16,
-          //                 color: Colors.black,
-          //                 fontFamily: 'Jost',
-          //                 fontWeight: FontWeight.w400),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
