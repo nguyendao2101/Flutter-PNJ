@@ -56,83 +56,86 @@ class LoginView extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 80,),
-                  Align(
-                      alignment: Alignment.center,
-                      child: Image.asset(ImageAsset.loadLogoApp, height: 80)),
-                  const SizedBox(height: 80,),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('Welcome ', style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.black,
+        child: Form(
+          key: controller.formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 80,),
+                    Align(
+                        alignment: Alignment.center,
+                        child: Image.asset(ImageAsset.loadLogoApp, height: 80)),
+                    const SizedBox(height: 80,),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Welcome ', style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.black,
+                            fontFamily: 'Jost',
+                            fontWeight: FontWeight.w600,),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4,),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Please login here ', style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xffA4A1AA),
                           fontFamily: 'Jost',
-                          fontWeight: FontWeight.w600,),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4,),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('Please login here ', style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xffA4A1AA),
-                        fontFamily: 'Jost',
-                        fontWeight: FontWeight.w400,),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20,),
-                  _formEmail(controller),
-                  const SizedBox(height: 20,),
-                  _formPassword(controller),
-                ],
+                          fontWeight: FontWeight.w400,),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20,),
+                    _formEmail(controller),
+                    const SizedBox(height: 20,),
+                    _formPassword(controller),
+                  ],
+                ),
               ),
-            ),
-            const Padding(
-              padding: const EdgeInsets.only(right: 8, left: 4),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      CheckBoxLogin(
-                        checkColor: Colors.white,
-                        activeColor: Colors.black,
-                      ),
-                      Text('Remember Me', style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xff131118),
-                        fontFamily: 'Jost',
-                        fontWeight: FontWeight.w400,),)
-                    ],
-                  ),
-                  Text('Forgot Password?', style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff131118),
-                    fontFamily: 'Jost',
-                    fontWeight: FontWeight.w400,),)
-                ],
+              const Padding(
+                padding: const EdgeInsets.only(right: 8, left: 4),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CheckBoxLogin(
+                          checkColor: Colors.white,
+                          activeColor: Colors.black,
+                        ),
+                        Text('Remember Me', style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff131118),
+                          fontFamily: 'Jost',
+                          fontWeight: FontWeight.w400,),)
+                      ],
+                    ),
+                    Text('Forgot Password?', style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xff131118),
+                      fontFamily: 'Jost',
+                      fontWeight: FontWeight.w400,),)
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 30,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: BasicAppButton(onPressed: (){
-
-              }, title: 'Login', sizeTitle: 16, colorButton: Color(0xff131118), radius: 10, height: 56, fontW: FontWeight.w400,),
-            )
-
-          ],
+              const SizedBox(height: 30,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: BasicAppButton(onPressed: (){
+                  controller.onlogin();
+                }, title: 'Login', sizeTitle: 16, colorButton: Color(0xff131118), radius: 10, height: 56, fontW: FontWeight.w400,),
+              )
+          
+            ],
+          ),
         ),
       ),
     );
