@@ -17,7 +17,7 @@ class _ConfirmHumanViewState extends State<ConfirmHumanView> {
 
   void navigatorAccessLocation() {
     Future.delayed(const Duration(seconds: 1), () {
-      Get.offAll(() => const MainNavView());
+      Get.offAll(() => const MainNavView(initialIndex: 0,));
     });
   }
 
