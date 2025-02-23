@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view/main_nav_view.dart';
 import 'package:get/get.dart';
+import '../../view/check_human_view.dart';
 import '../../view/login_view.dart';
 
 class FirAuth {
@@ -80,7 +81,7 @@ class FirAuth {
           print('User Role: $userRole');
 
           if (userRole == 'user') {
-            Get.offAll(() => const MainNavView());
+            Get.offAll(() => const ConfirmHumanView());
           } else {
             _showErrorDialog("Tài khoản không được cấp quyền truy cập.");
           }

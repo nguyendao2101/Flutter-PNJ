@@ -136,27 +136,6 @@ class SignUpViewModel extends GetxController {
       return null;
     }
   }
-
-  // Future<void> sendEmail(String email, String code) async {
-  //   String username = 'storejewelry73@gmail.com'; // Email gửi
-  //   String password = 'cqze ifbr edbn wxjd'; // Mật khẩu email gửi
-  //
-  //   final smtpServer = gmail(username, password); // Sử dụng Gmail
-  //
-  //   final message = Message()
-  //     ..from = Address(username, 'PNJ')
-  //     ..recipients.add(email) // Email nhận
-  //     ..subject = 'Mã xác minh tài khoản'
-  //     ..text =
-  //         'Chào bạn!\nCảm ơn bạn đã quan tâm và đăng ký tài khoản PNJ\nMã xác minh của bạn là: $code\nChúc bạn có những giây phút mua hàng vui vẻ!!\nĐừng quên đánh giá 5 sao cho sản phẩm nhé!!';
-  //
-  //   try {
-  //     await send(message, smtpServer);
-  //     print('Email gửi thành công');
-  //   } catch (e) {
-  //     print('Gửi email thất bại: $e');
-  //   }
-  // }
   Future<void> sendEmail(String email, String code) async {
     String username = 'storejewelry73@gmail.com'; // Email gửi
     String password = 'cqze ifbr edbn wxjd'; // Mật khẩu email gửi
@@ -164,7 +143,7 @@ class SignUpViewModel extends GetxController {
     final smtpServer = gmail(username, password);
 
     final message = Message()
-      ..from = Address(username, 'PNJ')
+      ..from = Address(username, 'PNJ Jewelry Store')
       ..recipients.add(email)
       ..subject = '🎁 Mã Xác Minh Tài Khoản PNJ'
       ..html = '''
