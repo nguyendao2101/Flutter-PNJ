@@ -18,9 +18,11 @@ class SignUpView extends StatefulWidget {
 
 class _SignUpViewState extends State<SignUpView> {
   bool iAgree = false;
+  late String codeMail;
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpViewModel());
+    codeMail = controller.generateVerificationCode().toString();
     return Scaffold(
       body: SingleChildScrollView(
         child: Form(
@@ -148,30 +150,20 @@ class _SignUpViewState extends State<SignUpView> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                 child: BasicAppButton(onPressed: (){
                   if(iAgree){
-                    // controller.signUp(
-                    //   controller.email,
-                    //   controller.password,
-                    //   controller.confirmPassword,
-                    //   controller.hoTen,
-                    //   controller.address,
-                    //   controller.sex,
-                    //   controller.numberPhone,
-                    //       () {
-                    //     controller.isLoading.value = false;
-                    //     controller.resetForm();
-                    //     Get.offAll(() => const LoginView());
-                    //   },
-                    //       (error) {
-                    //     controller.isLoading.value = false;
-                    //     Get.snackbar(
-                    //       'Error',
-                    //       error,
-                    //       snackPosition: SnackPosition.BOTTOM,
-                    //     );
-                    //   },
-                    // );
-                    Get.to(() => CheckMail());
-
+                    if (controller.isValidSignupForm()) {
+                      controller.sendEmail(
+                          controller.email, codeMail.toString());
+                      print('test ma code1: $codeMail');
+                      Get.to(() => CheckMail(
+                        email: controller.email,
+                        password: controller.password,
+                        fullName: controller.hoTen,
+                        address: controller.address,
+                        sex: controller.sex,
+                        phoneNumber: controller.numberPhone,
+                        verificationCode: codeMail.toString(),
+                      ));
+                    }
                   }
                 }, title: 'Sign Up', sizeTitle: 16, colorButton: const Color(0xff131118), radius: 10, height: 56, fontW: FontWeight.w400,),
               ),

@@ -137,26 +137,67 @@ class SignUpViewModel extends GetxController {
     }
   }
 
+  // Future<void> sendEmail(String email, String code) async {
+  //   String username = 'storejewelry73@gmail.com'; // Email gửi
+  //   String password = 'cqze ifbr edbn wxjd'; // Mật khẩu email gửi
+  //
+  //   final smtpServer = gmail(username, password); // Sử dụng Gmail
+  //
+  //   final message = Message()
+  //     ..from = Address(username, 'PNJ')
+  //     ..recipients.add(email) // Email nhận
+  //     ..subject = 'Mã xác minh tài khoản'
+  //     ..text =
+  //         'Chào bạn!\nCảm ơn bạn đã quan tâm và đăng ký tài khoản PNJ\nMã xác minh của bạn là: $code\nChúc bạn có những giây phút mua hàng vui vẻ!!\nĐừng quên đánh giá 5 sao cho sản phẩm nhé!!';
+  //
+  //   try {
+  //     await send(message, smtpServer);
+  //     print('Email gửi thành công');
+  //   } catch (e) {
+  //     print('Gửi email thất bại: $e');
+  //   }
+  // }
   Future<void> sendEmail(String email, String code) async {
-    String username = 'hungryhubb1@gmail.com'; // Email gửi
-    String password = 'nrhc ernj lejs fpyi'; // Mật khẩu email gửi
+    String username = 'storejewelry73@gmail.com'; // Email gửi
+    String password = 'cqze ifbr edbn wxjd'; // Mật khẩu email gửi
 
-    final smtpServer = gmail(username, password); // Sử dụng Gmail
+    final smtpServer = gmail(username, password);
 
     final message = Message()
-      ..from = Address(username, 'HungryHub')
-      ..recipients.add(email) // Email nhận
-      ..subject = 'Mã xác minh tài khoản'
-      ..text =
-          'Chào bạn!\nCảm ơn bạn đã quan tâm và đăng ký tài khoản HungryHub\nMã xác minh của bạn là: $code\nChúc bạn có những giây phút mua hàng vui vẻ!!\nĐừng quên đánh giá 5 sao cho sản phẩm nhé!!';
+      ..from = Address(username, 'PNJ')
+      ..recipients.add(email)
+      ..subject = '🎁 Mã Xác Minh Tài Khoản PNJ'
+      ..html = '''
+    <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+          <h2 style="color: #007bff; text-align: center;">🌟 Chào mừng bạn đến với PNJ! 🌟</h2>
+          <p style="font-size: 16px;">Cảm ơn bạn đã quan tâm và đăng ký tài khoản tại PNJ.</p>
+          <p style="font-size: 16px;">Dưới đây là <strong>Mã xác minh</strong> của bạn:</p>
+          <div style="text-align: center; padding: 10px 0;">
+            <span style="font-size: 28px; color: #007bff; font-weight: bold; background-color: #e9ecef; padding: 10px 20px; border-radius: 5px;">$code</span>
+          </div>
+          <p style="font-size: 16px;">Hãy sử dụng mã này để hoàn tất quá trình đăng ký tài khoản.</p>
+          <hr style="margin: 20px 0;">
+          <p style="font-size: 14px; color: #888; text-align: center;">
+            Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email này.  
+          </p>
+          <p style="text-align: center; color: #555; font-size: 14px;">
+            ❤️ Cảm ơn bạn đã tin tưởng và lựa chọn PNJ!  
+          </p>
+        </div>
+      </body>
+    </html>
+    ''';
 
     try {
       await send(message, smtpServer);
-      print('Email gửi thành công');
+      print('✅ Email gửi thành công.');
     } catch (e) {
-      print('Gửi email thất bại: $e');
+      print('❌ Gửi email thất bại: $e');
     }
   }
+
 
   String generateVerificationCode() {
     var random = Random();
