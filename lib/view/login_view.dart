@@ -11,12 +11,19 @@ import 'package:get/get.dart';
 
 import '../widgets/common_widget/check_box/check_box_login.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  bool isRememberMe = false;
+  @override
   Widget build(BuildContext context) {
     final controller = Get.put(LoginViewModel());
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -100,25 +107,28 @@ class LoginView extends StatelessWidget {
                   ],
                 ),
               ),
-              const Padding(
+              Padding(
                 padding: const EdgeInsets.only(right: 8, left: 4),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
                         CheckBoxLogin(
-                          checkColor: Colors.white,
-                          activeColor: Colors.black,
+                          onChanged: (value) {
+                            setState(() {
+                              isRememberMe = value;
+                            });
+                          },
                         ),
-                        Text('Remember Me', style: TextStyle(
+                        const Text('Remember Me', style: TextStyle(
                           fontSize: 16,
                           color: Color(0xff131118),
                           fontFamily: 'Jost',
                           fontWeight: FontWeight.w400,),)
                       ],
                     ),
-                    Text('Forgot Password?', style: TextStyle(
+                    const Text('Forgot Password?', style: TextStyle(
                       fontSize: 16,
                       color: Color(0xff131118),
                       fontFamily: 'Jost',
@@ -130,16 +140,24 @@ class LoginView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: BasicAppButton(onPressed: (){
-                  controller.onlogin();
-                }, title: 'Login', sizeTitle: 16, colorButton: Color(0xff131118), radius: 10, height: 56, fontW: FontWeight.w400,),
+                  if(isRememberMe == true) {
+                    controller.onlogin();
+                  }
+                  if (isRememberMe) {
+                    print("User wants to be remembered!");
+                  } else {
+                    print("User does not want to be remembered! $isRememberMe");
+                  }
+                }, title: 'Login', sizeTitle: 16, colorButton: const Color(0xff131118), radius: 10, height: 56, fontW: FontWeight.w400,),
               )
-          
+
             ],
           ),
         ),
       ),
     );
   }
+
   Widget _formPassword(LoginViewModel controller) {
     return Obx(
           () => Column(
@@ -164,7 +182,7 @@ class LoginView extends StatelessWidget {
               // const TextStyle(color: Colors.black), // Nhãn màu xám nhạt
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10), // Bo góc đường viền
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                     color: Colors.black, width: 1), // Viền màu xám
               ),
               focusedBorder: OutlineInputBorder(
@@ -206,6 +224,7 @@ class LoginView extends StatelessWidget {
       ),
     );
   }
+
   Column _formEmail(LoginViewModel controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

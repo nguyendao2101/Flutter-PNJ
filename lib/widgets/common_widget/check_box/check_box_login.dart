@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class CheckBoxLogin extends StatefulWidget {
   final Color activeColor;
   final Color checkColor;
-  final ValueChanged<bool?>? onChanged;
+  final ValueChanged<bool>? onChanged; // Thay đổi thành bool
 
   const CheckBoxLogin({
     Key? key,
-    this.activeColor = Colors.blue,
+    this.activeColor = Colors.black,
     this.checkColor = Colors.white,
     this.onChanged,
   }) : super(key: key);
@@ -25,11 +25,9 @@ class _CheckBoxLoginState extends State<CheckBoxLogin> {
       value: isChecked,
       onChanged: (value) {
         setState(() {
-          isChecked = value!;
+          isChecked = value ?? false;
         });
-        if (widget.onChanged != null) {
-          widget.onChanged!(isChecked);
-        }
+        widget.onChanged?.call(isChecked); // Gọi callback
       },
       activeColor: widget.activeColor,
       checkColor: widget.checkColor,

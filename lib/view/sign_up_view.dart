@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pnj/view/check_mail.dart';
 import 'package:flutter_pnj/view_model/sign_up_view_model.dart';
 import 'package:flutter_pnj/widgets/common/image_extention.dart';
 import 'package:flutter_pnj/widgets/common_widget/check_box/check_box_sign_up.dart';
@@ -8,9 +9,15 @@ import 'package:get/get.dart';
 import '../widgets/common_widget/button/bassic_button.dart';
 import 'login_view.dart';
 
-class SignUpView extends StatelessWidget {
+class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
 
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  bool iAgree = false;
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpViewModel());
@@ -108,15 +115,13 @@ class SignUpView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const CheckBoxSignUp(
-                          checkColor: Colors.white,
-                          activeColor: Colors.black,
+                        CheckBoxSignUp(
+                          onChanged: (value) {
+                            setState(() {
+                              iAgree = value;
+                            });
+                          },
                         ),
-                        // Text('Remember Me', style: TextStyle(
-                        //   fontSize: 16,
-                        //   color: Color(0xff131118),
-                        //   fontFamily: 'Jost',
-                        //   fontWeight: FontWeight.w400,),)
                         RichText(
                           text: const TextSpan(
                               style: TextStyle(
@@ -142,28 +147,32 @@ class SignUpView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                 child: BasicAppButton(onPressed: (){
-                  controller.signUp(
-                    controller.email,
-                    controller.password,
-                    controller.confirmPassword,
-                    controller.hoTen,
-                    controller.address,
-                    controller.sex,
-                    controller.numberPhone,
-                        () {
-                      controller.isLoading.value = false;
-                      controller.resetForm();
-                      Get.offAll(() => const LoginView());
-                    },
-                        (error) {
-                      controller.isLoading.value = false;
-                      Get.snackbar(
-                        'Error',
-                        error,
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                    },
-                  );
+                  if(iAgree){
+                    // controller.signUp(
+                    //   controller.email,
+                    //   controller.password,
+                    //   controller.confirmPassword,
+                    //   controller.hoTen,
+                    //   controller.address,
+                    //   controller.sex,
+                    //   controller.numberPhone,
+                    //       () {
+                    //     controller.isLoading.value = false;
+                    //     controller.resetForm();
+                    //     Get.offAll(() => const LoginView());
+                    //   },
+                    //       (error) {
+                    //     controller.isLoading.value = false;
+                    //     Get.snackbar(
+                    //       'Error',
+                    //       error,
+                    //       snackPosition: SnackPosition.BOTTOM,
+                    //     );
+                    //   },
+                    // );
+                    Get.to(() => CheckMail());
+
+                  }
                 }, title: 'Sign Up', sizeTitle: 16, colorButton: const Color(0xff131118), radius: 10, height: 56, fontW: FontWeight.w400,),
               ),
             ],
@@ -244,7 +253,6 @@ class SignUpView extends StatelessWidget {
       ],
     );
   }
-
 
   Column _formPassword(SignUpViewModel controller) {
     return Column(
@@ -379,6 +387,7 @@ class SignUpView extends StatelessWidget {
       ],
     );
   }
+
   Column _buildTextField( {
     required String label,
     required String hintText,
