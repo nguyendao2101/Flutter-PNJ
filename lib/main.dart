@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/firebase_options.dart';
+import 'package:flutter_pnj/view/main_nav_view.dart';
 import 'package:flutter_pnj/view/splash_view.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashView(),
+      // home: SplashView(),
+      home: MainNavView(initialIndex: 0)
     );
   }
 }
