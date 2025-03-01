@@ -20,6 +20,7 @@ class GetDataViewModel extends GetxController {
     super.onInit();
     // fetchStores(); // Lấy danh sách cửa hàng
     fetchOrderTracking();
+    fetchProducts();
   }
 
   // // Hàm lấy danh sách cửa hàng
@@ -104,7 +105,7 @@ class GetDataViewModel extends GetxController {
   Future<void> fetchProducts() async {
     try {
       final QuerySnapshot snapshot =
-      await _firestore.collection('products').get();
+      await _firestore.collection('Products').get();
       final fetchedProducts = snapshot.docs
           .map((doc) => {
         'id': doc.id, // Lưu productId
@@ -112,6 +113,9 @@ class GetDataViewModel extends GetxController {
       })
           .toList();
       products.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
+      for(var product in products){
+        print('id product: ${product['nameProduct']}');
+      }
     } catch (e) {
       print('Error fetching products: $e');
     }

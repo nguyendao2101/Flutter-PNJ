@@ -5,8 +5,6 @@ import 'package:flutter_pnj/view_model/home_view_model.dart';
 import 'package:flutter_pnj/widgets/common/image_extention.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../widgets/common_widget/button/bassic_button_inter.dart';
 import '../widgets/common_widget/footer/footer_view.dart';
 
@@ -54,414 +52,240 @@ class _CollectionViewState extends State<CollectionView> {
 
   @override
   Widget build(BuildContext context) {
-
-    List<String> titleImageJewelry = ['Nhẫn','Dây Chuyền','Vòng - Lắc','Bông Tai'];
-    List<String> titleImageJewelryMarry = ['Nhẫn Cầu Hôn','Nhân Cưới','Nhẫn Cặp','Kiềng'];
-    List<String> imageJewelry = [
-      ImageAsset.homeNhan,
-      ImageAsset.homeDayChuyen,
-      ImageAsset.homeVongLac,
-      ImageAsset.homeBongTai,
-    ];
-    List<String> imageJewelryMarry = [
-      ImageAsset.homeNhanCauHon,
-      ImageAsset.homeNhanCuoi,
-      ImageAsset.homeNhanCap,
-      ImageAsset.homeKieng,
-    ];
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20,),
-            SizedBox(
-              height: 220, // Chiều cao tổng
-              child: Stack(
-                alignment: Alignment.bottomCenter, // Căn chấm xuống dưới ảnh
-                children: [
-                  _isLoadingAdvertisement ? Center(child: CircularProgressIndicator())
-              : _advertisement.isNotEmpty
-              ? CarouselSlider.builder(
-              options: CarouselOptions(
-              height: 200,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 1,
-                autoPlayInterval: const Duration(seconds: 4),
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 60,),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: Text('Món quà tuyệt vời cho tình yêu của bạn', style: TextStyle(
+                  fontSize: 24,
+                  color: Color(0xff131118),
+                  fontFamily: 'Prata',
+                  fontWeight: FontWeight.w400,),
+                textAlign: TextAlign.center,),
               ),
-          itemCount: _advertisement.length,
-          itemBuilder: (context, index, realIndex) {
-            final imageUrl = _advertisement[index]['urlImage'] ?? '';
-
-            return ClipRRect(
-              child: imageUrl.isNotEmpty
-                  ? Image.network(
-                imageUrl,
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.fill,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(child: CircularProgressIndicator());
-                },
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  height: 200,
-                  child: const Center(child: Icon(Icons.broken_image, size: 40)),
-                ),
-              )
-                  : Container(
-                color: Colors.grey[300],
-                height: 200,
-                child: const Center(child: Icon(Icons.broken_image, size: 40)),
-              ),
-            );
-          },
-        ) : Center(child: Text("Không có dữ liệu")),
-        Positioned(
-                    bottom: 10, // Khoảng cách từ đáy ảnh
-                    child: AnimatedSmoothIndicator(
-                      activeIndex: _currentIndex,
-                      count: _advertisement.length,
-                      effect: WormEffect(
-                        dotWidth: 8,
-                        dotHeight: 8,
-                        spacing: 5,
-                        activeDotColor: Colors.white, // Màu chấm nổi bật
-                        dotColor: Colors.white.withOpacity(0.5), // Màu chấm nhạt
+              const SizedBox(height: 20),
+              SvgPicture.asset(ImageAsset.horizontal),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20B%E1%BB%99%20s%C6%B0u%20t%E1%BA%ADp%2FBosuutap_Onlyyou.png?alt=media&token=39ff59eb-d3e8-45d3-9d2a-d54cdaaf32fd'),
+                    const SizedBox(height: 20),
+                    const Text('Vì em là duy nhất', style: TextStyle(
+                      fontSize: 24,
+                      color: Color(0xff131118),
+                      fontFamily: 'Prata',
+                      fontWeight: FontWeight.w400,),
+                      textAlign: TextAlign.center,),
+                    const Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      child: Text(' Bộ sưu tập lấy cảm hứng từ "Only You",với hình ảnh chữ O và U lồng ghép vào nhau tạo thành biểu tượng tinh tế, khéo léo mang vào thiết kế để tạo nên chiếc nhẫn cầu hôn với ý nghĩa đặc biệt: Chỉ trao tình yêu duy nhất một đời.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff131118),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,),
+                        textAlign: TextAlign.center,),
+                    ),
+                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20trang%20s%E1%BB%A9c%2FTrangsuc_nhan.png?alt=media&token=71f900cb-5a5a-416a-a344-1b47e9a596dc', height: 106,),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 100),
+                      child: BassicButtonInter(onPressed: () {},
+                        title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
+                        height: 44, radius: 5,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            _siboxTitle('Trang Sức',140),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 220, // Chiều cao của danh sách ảnh
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal, // Vuốt ngang
-                itemCount: imageJewelry.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
+                    const SizedBox(height: 20),
+                    Column(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            imageJewelry[index],
-                            width: 163, // Độ rộng ảnh
-                            height: 167, // Chiều cao ảnh
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              width: 150,
-                              height: 200,
-                              color: Colors.grey[300],
-                              child: const Center(child: Icon(Icons.broken_image, size: 40)),
-                            ),
+                        const SizedBox(height: 20,),
+                        Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20152938.png?alt=media&token=9090aaba-a778-4c7e-965c-75e8ebd95b66',),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: const Color(0xffFFBEC4)
+                            )
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 80,),
+                              const Text('Chót Mê', style: TextStyle(
+                                fontSize: 24,
+                                color: Color(0xff131118),
+                                fontFamily: 'Prata',
+                                fontWeight: FontWeight.w400,),
+                                textAlign: TextAlign.center,),
+                              const SizedBox(height: 40,),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 24),
+                                child: Text('Tình yêu là sự rung động từ trái tim, là những khoảnh khắc đáng trân quý mà ta luôn muốn gìn giữ.Bộ sưu tập Chót Mê ra đời như một cách tôn vinh cảm xúc chân thành, giúp bạn gửi gắm những lời yêu thương sâu sắc qua từng thiết kế trang sức tinh xảo.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xff131118),
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w400,),
+                                  textAlign: TextAlign.center,),
+                              ),
+                              const SizedBox(height: 60),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 100),
+                                child: BassicButtonInter(onPressed: () {},
+                                  title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
+                                  height: 44, radius: 5,
+                                ),
+                              ),
+                              const SizedBox(height: 50),
+      
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 12,),
-                        Text(titleImageJewelry[index],style: const TextStyle(
-                          fontSize: 18,
-                          color: Color(0xff131118),
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,),)
                       ],
-                    ),
-                  );
-                },
-              ),),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
-              child: BassicButtonInter(onPressed: () {},
-                title: 'TOP BÁN CHẠY', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
-                height: 44, radius: 5,
+                    )
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            _siboxTitle('Trang Sức Cưới',200),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 220, // Chiều cao của danh sách ảnh
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal, // Vuốt ngang
-                itemCount: imageJewelryMarry.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            imageJewelryMarry[index],
-                            width: 163, // Độ rộng ảnh
-                            height: 167, // Chiều cao ảnh
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              width: 150,
-                              height: 200,
-                              color: Colors.grey[300],
-                              child: const Center(child: Icon(Icons.broken_image, size: 40)),
+              const SizedBox(height: 60,),
+              Container(
+                width: double.infinity,
+                height: 600,
+                child: Stack(
+                  children: [
+                    Positioned.fill( // Ảnh nền lấp đầy Container
+                      child: Image.network(
+                        'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20155924.png?alt=media&token=b024b5a8-c061-49c2-9b69-dfcc2eec80ea',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment(0, 0.2), // Căn giữa theo chiều ngang, dịch xuống một chút
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 250,),
+                          Container(
+                            width: 180,
+                            height: 44,
+                            child: BassicButtonInter(
+                              onPressed: () {},
+                              title: 'SEE NOW',
+                              sizeTitle: 12,
+                              fontW: FontWeight.w700,
+                              colorButton: const Color(0xffFFFFFF),
+                              colortext: const Color(0xffAC3843),
+                              height: 44,
+                              radius: 5,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 12,),
-                        Text(titleImageJewelryMarry[index],style: const TextStyle(
-                          fontSize: 18,
-                          color: Color(0xff131118),
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,),)
-                      ],
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ),),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
-              child: BassicButtonInter(onPressed: () {},
-                title: 'TOP BÁN CHẠY', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
-                height: 44, radius: 5,
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              child: Text('Món quà tuyệt vời cho tình yêu của bạn', style: TextStyle(
-                fontSize: 24,
-                color: Color(0xff131118),
-                fontFamily: 'Prata',
-                fontWeight: FontWeight.w400,),
-              textAlign: TextAlign.center,),
-            ),
-            const SizedBox(height: 20),
-            SvgPicture.asset(ImageAsset.horizontal),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20B%E1%BB%99%20s%C6%B0u%20t%E1%BA%ADp%2FBosuutap_Onlyyou.png?alt=media&token=39ff59eb-d3e8-45d3-9d2a-d54cdaaf32fd'),
-                  const SizedBox(height: 20),
-                  const Text('Vì em là duy nhất', style: TextStyle(
-                    fontSize: 24,
-                    color: Color(0xff131118),
-                    fontFamily: 'Prata',
-                    fontWeight: FontWeight.w400,),
-                    textAlign: TextAlign.center,),
-                  const Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    child: Text(' Bộ sưu tập lấy cảm hứng từ "Only You",với hình ảnh chữ O và U lồng ghép vào nhau tạo thành biểu tượng tinh tế, khéo léo mang vào thiết kế để tạo nên chiếc nhẫn cầu hôn với ý nghĩa đặc biệt: Chỉ trao tình yêu duy nhất một đời.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff131118),
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,),
-                      textAlign: TextAlign.center,),
-                  ),
-                  Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20trang%20s%E1%BB%A9c%2FTrangsuc_nhan.png?alt=media&token=71f900cb-5a5a-416a-a344-1b47e9a596dc', height: 106,),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: BassicButtonInter(onPressed: () {},
-                      title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
-                      height: 44, radius: 5,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      const SizedBox(height: 20,),
-                      Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20152938.png?alt=media&token=9090aaba-a778-4c7e-965c-75e8ebd95b66',),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
+              const SizedBox(height: 60,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20162938.png?alt=media&token=4a37cf34-db96-4180-a203-9e7e3af4fb10'),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
                           border: Border.all(
-                            width: 1,
-                            color: const Color(0xffFFBEC4)
+                              width: 1,
+                              color: const Color(0xffFFBEC4)
                           )
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 80,),
-                            const Text('Chót Mê', style: TextStyle(
-                              fontSize: 24,
-                              color: Color(0xff131118),
-                              fontFamily: 'Prata',
-                              fontWeight: FontWeight.w400,),
-                              textAlign: TextAlign.center,),
-                            const SizedBox(height: 40,),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24),
-                              child: Text('Tình yêu là sự rung động từ trái tim, là những khoảnh khắc đáng trân quý mà ta luôn muốn gìn giữ.Bộ sưu tập Chót Mê ra đời như một cách tôn vinh cảm xúc chân thành, giúp bạn gửi gắm những lời yêu thương sâu sắc qua từng thiết kế trang sức tinh xảo.',
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 80,),
+                          const Text('Quý phái', style: TextStyle(
+                            fontSize: 24,
+                            color: Color(0xff131118),
+                            fontFamily: 'Prata',
+                            fontWeight: FontWeight.w400,),
+                            textAlign: TextAlign.center,),
+                          const SizedBox(height: 40,),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            child: Text('Tỏa sáng với những thiết kế tinh xảo từ PNJ, được chế tác từ vàng, kim cương và đá quý cao cấp. Mỗi đôi bông tai không chỉ tôn vinh nét thanh lịch mà còn là biểu tượng của sự sang trọng và đẳng cấp, giúp bạn luôn rạng rỡ trong mọi khoảnh khắc.',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Color(0xff131118),
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,),
-                                textAlign: TextAlign.center,),
+                              textAlign: TextAlign.center,),
+                          ),
+                          const SizedBox(height: 60),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 100),
+                            child: BassicButtonInter(onPressed: () {},
+                              title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
+                              height: 44, radius: 5,
                             ),
-                            const SizedBox(height: 60),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 100),
-                              child: BassicButtonInter(onPressed: () {},
-                                title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
-                                height: 44, radius: 5,
-                              ),
-                            ),
-                            const SizedBox(height: 50),
-
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 50),
+      
+                        ],
                       ),
-                    ],
-                  )
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 60,),
-            Container(
-              width: double.infinity,
-              height: 600,
-              child: Stack(
-                children: [
-                  Positioned.fill( // Ảnh nền lấp đầy Container
-                    child: Image.network(
-                      'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20155924.png?alt=media&token=b024b5a8-c061-49c2-9b69-dfcc2eec80ea',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 0.2), // Căn giữa theo chiều ngang, dịch xuống một chút
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 250,),
-                        Container(
-                          width: 180,
-                          height: 44,
-                          child: BassicButtonInter(
-                            onPressed: () {},
-                            title: 'SEE NOW',
-                            sizeTitle: 12,
-                            fontW: FontWeight.w700,
-                            colorButton: const Color(0xffFFFFFF),
-                            colortext: const Color(0xffAC3843),
-                            height: 44,
-                            radius: 5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 60,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20162938.png?alt=media&token=4a37cf34-db96-4180-a203-9e7e3af4fb10'),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1,
-                            color: const Color(0xffFFBEC4)
-                        )
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 80,),
-                        const Text('Quý phái', style: TextStyle(
-                          fontSize: 24,
-                          color: Color(0xff131118),
-                          fontFamily: 'Prata',
-                          fontWeight: FontWeight.w400,),
-                          textAlign: TextAlign.center,),
-                        const SizedBox(height: 40,),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          child: Text('Tỏa sáng với những thiết kế tinh xảo từ PNJ, được chế tác từ vàng, kim cương và đá quý cao cấp. Mỗi đôi bông tai không chỉ tôn vinh nét thanh lịch mà còn là biểu tượng của sự sang trọng và đẳng cấp, giúp bạn luôn rạng rỡ trong mọi khoảnh khắc.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff131118),
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,),
+              const SizedBox(height: 80),
+              Container(
+                color: Color(0xffF5F3EF),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 80,),
+                          const Text('COMBO ƯU ĐÃI', style: TextStyle(
+                            fontSize: 24,
+                            color: Color(0xff131118),
+                            fontFamily: 'Prata',
+                            fontWeight: FontWeight.w400,),
                             textAlign: TextAlign.center,),
-                        ),
-                        const SizedBox(height: 60),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 100),
-                          child: BassicButtonInter(onPressed: () {},
-                            title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
-                            height: 44, radius: 5,
+                          const SizedBox(height: 40,),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            child: Text('Khám phá ngay những combo trang sức PNJ với thiết kế tinh xảo, kết hợp hoàn hảo giữa nhẫn, bông tai, dây chuyền và lắc tay. Sở hữu vẻ đẹp sang trọng với mức giá hấp dẫn, giúp bạn tỏa sáng trong mọi dịp đặc biệt!',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xff131118),
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,),
+                              textAlign: TextAlign.center,),
                           ),
-                        ),
-                        const SizedBox(height: 50),
-
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 80),
-            Container(
-              color: Color(0xffF5F3EF),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 80,),
-                        const Text('COMBO ƯU ĐÃI', style: TextStyle(
-                          fontSize: 24,
-                          color: Color(0xff131118),
-                          fontFamily: 'Prata',
-                          fontWeight: FontWeight.w400,),
-                          textAlign: TextAlign.center,),
-                        const SizedBox(height: 40,),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          child: Text('Khám phá ngay những combo trang sức PNJ với thiết kế tinh xảo, kết hợp hoàn hảo giữa nhẫn, bông tai, dây chuyền và lắc tay. Sở hữu vẻ đẹp sang trọng với mức giá hấp dẫn, giúp bạn tỏa sáng trong mọi dịp đặc biệt!',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff131118),
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,),
-                            textAlign: TextAlign.center,),
-                        ),
-                        const SizedBox(height: 60),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 100),
-                          child: BassicButtonInter(onPressed: () {},
-                            title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
-                            height: 44, radius: 5,
+                          const SizedBox(height: 60),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 100),
+                            child: BassicButtonInter(onPressed: () {},
+                              title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
+                              height: 44, radius: 5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 50),
-                      ],
+                          const SizedBox(height: 50),
+                        ],
+                      ),
                     ),
-                  ),
-                  Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20164336.png?alt=media&token=3462d822-26a1-499a-aeab-c86e79d02d47'),
-                  const SizedBox(height: 40,)
-                ],
+                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20164336.png?alt=media&token=3462d822-26a1-499a-aeab-c86e79d02d47'),
+                    const SizedBox(height: 40,)
+                  ],
+                ),
               ),
-            ),
-            const FooterView(),
-
-          ],
+              const FooterView(),
+      
+            ],
+          ),
         ),
       ),
     );
