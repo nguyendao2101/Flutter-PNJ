@@ -47,11 +47,49 @@ class _ProductCardListViewState extends State<ProductCardListView> {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
                   color: Colors.grey.withOpacity(0.3)
                 ),
-                child: Image.network(
-                  widget.product['productImg'][0] ?? '',
-                  width: 201,
-                  height: 170,
-                  fit: BoxFit.fill,
+                child: Stack(
+                  children: [
+                    Image.network(
+                      widget.product['productImg'][0] ?? '',
+                      width: 201,
+                      height: 170,
+                      fit: BoxFit.fill,
+                    ),
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: GestureDetector(
+                        onTap: () {
+                          // controller.toggleFavorite(widget.product);
+                        },
+                        child: Obx(
+                              () => Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200], // Màu nền xám nhạt
+                              shape: BoxShape.circle,  // Hình tròn
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2), // Đổ bóng nhẹ
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(6), // Khoảng cách bên trong
+                            child: Icon(
+                              controller.isFavorite(widget.product)
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: controller.isFavorite(widget.product)
+                                  ? Colors.red
+                                  : Colors.grey,
+                              size: 24, // Kích thước icon
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -65,6 +103,7 @@ class _ProductCardListViewState extends State<ProductCardListView> {
                         Expanded(
                           child: Text(
                             widget.product['nameProduct'] ?? 'No data',
+                            // widget.product['nameProduct'] ?? 'No data',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color(0xff131118),

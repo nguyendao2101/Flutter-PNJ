@@ -219,16 +219,16 @@ class _HomeViewState extends State<HomeView> {
                   return GestureDetector(
                     onTap: (){
                       if(titleImageJewelry[index] == 'Vòng - Lắc'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Vòng lắc',));
+                        Get.to(() => TypeProduct(typeProduct: 'Vòng lắc', productDetail: _products,));
                       }
                       if(titleImageJewelry[index] == 'Nhẫn'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn',));
+                        Get.to(() => TypeProduct(typeProduct: 'Nhẫn', productDetail: _products,));
                       }
                       if(titleImageJewelry[index] == 'Dây Chuyền'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Dây chuyền',));
+                        Get.to(() => TypeProduct(typeProduct: 'Dây chuyền', productDetail: _products,));
                       }
                       if(titleImageJewelry[index] == 'Bông Tai'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Bông tai',));
+                        Get.to(() => TypeProduct(typeProduct: 'Bông tai', productDetail: _products,));
                       }
                     },
                     child: Padding(
@@ -283,16 +283,16 @@ class _HomeViewState extends State<HomeView> {
                     onTap: (){
                       // 'Nhẫn Cầu Hôn','Nhân Cưới','Nhẫn Cặp','Kiềng'
                       if(titleImageJewelryMarry[index] == 'Nhẫn Cầu Hôn'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn Cầu hôn',));
+                        Get.to(() => TypeProduct(typeProduct: 'Nhẫn Cầu hôn', productDetail: _products,));
                       }
                       if(titleImageJewelryMarry[index] == 'Nhân Cưới'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn cưới',));
+                        Get.to(() => TypeProduct(typeProduct: 'Nhẫn cưới', productDetail: _products,));
                       }
                       if(titleImageJewelryMarry[index] == 'Nhẫn Cặp'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn cặp',));
+                        Get.to(() => TypeProduct(typeProduct: 'Nhẫn cặp', productDetail: _products,));
                       }
                       if(titleImageJewelryMarry[index] == 'Kiềng'){
-                        Get.to(() => const TypeProduct(typeProduct: 'Kiềng',));
+                        Get.to(() => TypeProduct(typeProduct: 'Kiềng', productDetail: _products,));
                       }
                     },
                     child: Padding(
@@ -343,7 +343,7 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: (){
-                Get.to(()=> const TypeProduct(typeProduct: 'Nhẫn',));
+                Get.to(()=> TypeProduct(typeProduct: 'Nhẫn', productDetail: _products,));
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -353,7 +353,7 @@ class _HomeViewState extends State<HomeView> {
             _cardProduct('Nhẫn'),
             // GestureDetector(
             //   onTap: (){
-            //     Get.to(()=> const TypeProduct(typeProduct: 'Dây chuyền',));
+            //     Get.to(()=> TypeProduct(typeProduct: 'Dây chuyền', productDetail: _products,));
             //   },
             //   child: Padding(
             //     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -364,7 +364,7 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: (){
-                Get.to(()=> const TypeProduct(typeProduct: 'Vòng lắc',));
+                Get.to(()=> TypeProduct(typeProduct: 'Vòng lắc', productDetail: _products,));
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -372,29 +372,54 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             _cardProduct('Vòng lắc'),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: _titleSeeMore('Bông Tai'),
+            // GestureDetector(
+            //   onTap: (){
+            //     Get.to(()=> TypeProduct(typeProduct: 'Bông tai', productDetail: _products,));
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 16),
+            //     child: _titleSeeMore('Bông Tai'),
+            //   ),
             // ),
             // _cardProduct('Bông tai'),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: _titleSeeMore('Nhẫn cầu hôn'),
+            // GestureDetector(
+            //   onTap: (){
+            //     Get.to(()=> TypeProduct(typeProduct: 'Nhẫn Cầu hôn', productDetail: _products,));
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 16),
+            //     child: _titleSeeMore('Nhẫn cầu hôn'),
+            //   ),
             // ),
             // _cardProduct('Nhẫn Cầu hôn'),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: _titleSeeMore('Nhẫn Cưới'),
-            // ),
-            // _cardProduct('Nhẫn cưới'),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: _titleSeeMore('Nhẫn Cặp'),
+            GestureDetector(
+              onTap: (){
+                Get.to(()=> TypeProduct(typeProduct: 'Nhẫn cưới', productDetail: _products,));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _titleSeeMore('Nhẫn Cưới'),
+              ),
+            ),
+            _cardProduct('Nhẫn cưới'),
+            // GestureDetector(
+            //   onTap: (){
+            //     Get.to(()=> TypeProduct(typeProduct: 'Nhẫn cặp', productDetail: _products,));
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 16),
+            //     child: _titleSeeMore('Nhẫn Cặp'),
+            //   ),
             // ),
             // _cardProduct('Nhẫn cặp'),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: _titleSeeMore('Kiềng'),
+            // GestureDetector(
+            //   onTap: (){
+            //     Get.to(()=> TypeProduct(typeProduct: 'Kiềng', productDetail: _products,));
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 16),
+            //     child: _titleSeeMore('Kiềng'),
+            //   ),
             // ),
             // _cardProduct('Kiềng'),
             const SizedBox(height: 40),
