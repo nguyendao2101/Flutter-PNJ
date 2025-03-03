@@ -20,6 +20,8 @@ class ImageAsset{
   static String columnLogoApp = '$baseImagePathPNG/column_logo_app.png';
   static String social = '$baseImagePathPNG/social.png';
   static String pay = '$baseImagePathPNG/pay.png';
+  static String zalo = '$baseImagePathPNG/zalo.png';
+  static String callPhoneNumber = '$baseImagePathPNG/call_phone_number.png';
 
 
   // SVG
@@ -36,4 +38,6 @@ class ImageAsset{
   static String userUn = '$baseImagesPathSVG/user_un$format';
   static String filter = '$baseImagesPathSVG/filter$format';
   static String horizontal = '$baseImagesPathSVG/horizontal$format';
+  static String backButton = '$baseImagesPathSVG/back_button$format';
+  static String more = '$baseImagesPathSVG/more$format';
 }

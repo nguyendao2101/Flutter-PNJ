@@ -9,6 +9,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../widgets/common_widget/button/bassic_button_inter.dart';
 import '../widgets/common_widget/footer/footer_view.dart';
 import '../widgets/common_widget/product_card/product_card_list_view.dart';
+import '../widgets/common_widget/type_product/type_product.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -215,32 +216,48 @@ class _HomeViewState extends State<HomeView> {
                 scrollDirection: Axis.horizontal, // Vuốt ngang
                 itemCount: imageJewelry.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            imageJewelry[index],
-                            width: 163, // Độ rộng ảnh
-                            height: 167, // Chiều cao ảnh
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              width: 150,
-                              height: 200,
-                              color: Colors.grey[300],
-                              child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                  return GestureDetector(
+                    onTap: (){
+                      if(titleImageJewelry[index] == 'Vòng - Lắc'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Vòng lắc',));
+                      }
+                      if(titleImageJewelry[index] == 'Nhẫn'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn',));
+                      }
+                      if(titleImageJewelry[index] == 'Dây Chuyền'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Dây chuyền',));
+                      }
+                      if(titleImageJewelry[index] == 'Bông Tai'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Bông tai',));
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              imageJewelry[index],
+                              width: 163, // Độ rộng ảnh
+                              height: 167, // Chiều cao ảnh
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: 150,
+                                height: 200,
+                                color: Colors.grey[300],
+                                child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 12,),
-                        Text(titleImageJewelry[index],style: const TextStyle(
-                          fontSize: 18,
-                          color: Color(0xff131118),
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,),)
-                      ],
+                          const SizedBox(height: 12,),
+                          Text(titleImageJewelry[index],style: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xff131118),
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,),)
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -262,32 +279,49 @@ class _HomeViewState extends State<HomeView> {
                 scrollDirection: Axis.horizontal, // Vuốt ngang
                 itemCount: imageJewelryMarry.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            imageJewelryMarry[index],
-                            width: 163, // Độ rộng ảnh
-                            height: 167, // Chiều cao ảnh
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              width: 150,
-                              height: 200,
-                              color: Colors.grey[300],
-                              child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                  return GestureDetector(
+                    onTap: (){
+                      // 'Nhẫn Cầu Hôn','Nhân Cưới','Nhẫn Cặp','Kiềng'
+                      if(titleImageJewelryMarry[index] == 'Nhẫn Cầu Hôn'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn Cầu hôn',));
+                      }
+                      if(titleImageJewelryMarry[index] == 'Nhân Cưới'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn cưới',));
+                      }
+                      if(titleImageJewelryMarry[index] == 'Nhẫn Cặp'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Nhẫn cặp',));
+                      }
+                      if(titleImageJewelryMarry[index] == 'Kiềng'){
+                        Get.to(() => const TypeProduct(typeProduct: 'Kiềng',));
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              imageJewelryMarry[index],
+                              width: 163, // Độ rộng ảnh
+                              height: 167, // Chiều cao ảnh
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: 150,
+                                height: 200,
+                                color: Colors.grey[300],
+                                child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 12,),
-                        Text(titleImageJewelryMarry[index],style: const TextStyle(
-                          fontSize: 18,
-                          color: Color(0xff131118),
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,),)
-                      ],
+                          const SizedBox(height: 12,),
+                          Text(titleImageJewelryMarry[index],style: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xff131118),
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,),)
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -307,19 +341,35 @@ class _HomeViewState extends State<HomeView> {
               color: Colors.grey.withOpacity(0.5),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _titleSeeMore('Nhẫn'),
+            GestureDetector(
+              onTap: (){
+                Get.to(()=> const TypeProduct(typeProduct: 'Nhẫn',));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _titleSeeMore('Nhẫn'),
+              ),
             ),
             _cardProduct('Nhẫn'),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: _titleSeeMore('Dây Chuyền'),
+            // GestureDetector(
+            //   onTap: (){
+            //     Get.to(()=> const TypeProduct(typeProduct: 'Dây chuyền',));
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 16),
+            //     child: _titleSeeMore('Dây Chuyền'),
+            //   ),
             // ),
             // _cardProduct('Dây chuyền'),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _titleSeeMore('Vòng - lắc'),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: (){
+                Get.to(()=> const TypeProduct(typeProduct: 'Vòng lắc',));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _titleSeeMore('Vòng - lắc'),
+              ),
             ),
             _cardProduct('Vòng lắc'),
             // Padding(
