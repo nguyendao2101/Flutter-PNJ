@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../widgets/common_widget/button/bassic_button_inter.dart';
 import '../widgets/common_widget/footer/footer_view.dart';
+import '../widgets/common_widget/type_product/collection_product.dart';
 
 class CollectionView extends StatefulWidget {
   const CollectionView({super.key});
@@ -95,7 +96,9 @@ class _CollectionViewState extends State<CollectionView> {
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 100),
-                      child: BassicButtonInter(onPressed: () {},
+                      child: BassicButtonInter(onPressed: () {
+                        Get.to(()=> const CollectionProduct(idCollection: 'OnlyYou',));
+                      },
                         title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
                         height: 44, radius: 5,
                       ),
@@ -136,7 +139,9 @@ class _CollectionViewState extends State<CollectionView> {
                               const SizedBox(height: 60),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 100),
-                                child: BassicButtonInter(onPressed: () {},
+                                child: BassicButtonInter(onPressed: () {
+                                  Get.to(()=> const CollectionProduct(idCollection: 'ChotMe',));
+                                },
                                   title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
                                   height: 44, radius: 5,
                                 ),
@@ -172,7 +177,9 @@ class _CollectionViewState extends State<CollectionView> {
                             width: 180,
                             height: 44,
                             child: BassicButtonInter(
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.to(()=> const CollectionProduct(idCollection: 'TuyetTacTrangSuc',));
+                              },
                               title: 'SEE NOW',
                               sizeTitle: 12,
                               fontW: FontWeight.w700,
@@ -225,7 +232,9 @@ class _CollectionViewState extends State<CollectionView> {
                           const SizedBox(height: 60),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 100),
-                            child: BassicButtonInter(onPressed: () {},
+                            child: BassicButtonInter(onPressed: () {
+                              Get.to(()=> const CollectionProduct(idCollection: 'QuyPhai',));
+                            },
                               title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
                               height: 44, radius: 5,
                             ),
@@ -268,7 +277,9 @@ class _CollectionViewState extends State<CollectionView> {
                           const SizedBox(height: 60),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 100),
-                            child: BassicButtonInter(onPressed: () {},
+                            child: BassicButtonInter(onPressed: () {
+                              Get.to(()=> const CollectionProduct(idCollection: 'Combo',));
+                            },
                               title: 'SEE NOW', sizeTitle: 12,fontW: FontWeight.w700,colorButton: const Color(0xffAC3843),
                               height: 44, radius: 5,
                             ),

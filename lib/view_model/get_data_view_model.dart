@@ -10,6 +10,7 @@ class GetDataViewModel extends GetxController {
   // Biến lưu trữ danh sách cửa hàng, sản phẩm và đơn hàng
   // final RxList<Map<String, dynamic>> stores = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> products = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> collection = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> adminTitle = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> advertisement = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> orderTracking = <Map<String, dynamic>>[].obs;
@@ -21,6 +22,7 @@ class GetDataViewModel extends GetxController {
     // fetchStores(); // Lấy danh sách cửa hàng
     fetchOrderTracking();
     fetchProducts();
+    fetchCollectionProduct();
   }
 
   // // Hàm lấy danh sách cửa hàng
@@ -98,6 +100,26 @@ class GetDataViewModel extends GetxController {
       advertisement.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
     } catch (e) {
       print('Error fetching AdminTitle: $e');
+    }
+  }
+
+  // Hàm lấy danh sách bộ sưu tập sản phẩm
+  Future<void> fetchCollectionProduct() async {
+    try {
+      final QuerySnapshot snapshot =
+      await _firestore.collection('CollectionProducts').get();
+      final fetchedProducts = snapshot.docs
+          .map((doc) => {
+        'id': doc.id, // Lưu productId
+        ...doc.data() as Map<String, dynamic>,
+      })
+          .toList();
+      collection.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
+      for(var product in products){
+        print('id product: ${product['nameProduct']}');
+      }
+    } catch (e) {
+      print('Error fetching products: $e');
     }
   }
 
