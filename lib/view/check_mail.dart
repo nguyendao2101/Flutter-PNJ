@@ -12,7 +12,7 @@ class CheckMail extends StatefulWidget {
   final String email;
   final String password;
   final String fullName;
-  final String address;
+  // final String address;
   final String sex;
   final String phoneNumber;
   final String verificationCode; // Mã xác minh từ controller
@@ -22,7 +22,7 @@ class CheckMail extends StatefulWidget {
     required this.email,
     required this.password,
     required this.fullName,
-    required this.address,
+    // required this.address,
     required this.sex,
     required this.phoneNumber,
     required this.verificationCode, // Thêm mã xác minh
@@ -110,7 +110,7 @@ class _CheckMailState extends State<CheckMail> {
         controller.password,
         controller.confirmPassword,
         controller.hoTen,
-        controller.address,
+        // controller.address,
         controller.sex,
         controller.numberPhone,
             () {

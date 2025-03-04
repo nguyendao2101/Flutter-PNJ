@@ -82,7 +82,7 @@ class SignUpViewModel extends GetxController {
       String passWord,
       String entryPassword,
       String hoTen,
-      String addRess,
+      // String addRess,
       String sex,
       String numberPhone,
       Function onSuccess,
@@ -94,7 +94,7 @@ class SignUpViewModel extends GetxController {
       _dbRef.child('users').child(userCredential.user!.uid).set({
         'email': email,
         'fullName': hoTen,
-        'address': addRess,
+        // 'address': addRess,
         'sex': sex,
         'numberPhone': numberPhone,
         'role': 'user', // Thêm giá trị mặc định cho role
@@ -229,7 +229,7 @@ class SignUpViewModel extends GetxController {
     password = '';
     confirmPassword = '';
     hoTen = '';
-    address = '';
+    // address = '';
     sex = '';
     numberPhone = '';
     formKey.currentState?.reset();

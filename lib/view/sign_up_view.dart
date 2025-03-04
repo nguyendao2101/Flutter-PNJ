@@ -69,14 +69,14 @@ class _SignUpViewState extends State<SignUpView> {
                       onChanged: controller.onChangeCheckName,
                       validator: controller.validatorCheck,
                     ),
-                    const SizedBox(height: 20,),
-                    _buildTextField(
-                      label: 'Address',
-                      hintText: 'Address',
-                      obscureText: false,
-                      onChanged: controller.onChangeCheckAdress,
-                      validator: controller.validatorCheck,
-                    ),
+                    // const SizedBox(height: 20,),
+                    // _buildTextField(
+                    //   label: 'Address',
+                    //   hintText: 'Address',
+                    //   obscureText: false,
+                    //   onChanged: controller.onChangeCheckAdress,
+                    //   validator: controller.validatorCheck,
+                    // ),
                     const SizedBox(height: 20,),
                     Row(
                       children: [
@@ -158,7 +158,7 @@ class _SignUpViewState extends State<SignUpView> {
                         email: controller.email,
                         password: controller.password,
                         fullName: controller.hoTen,
-                        address: controller.address,
+                        // address: controller.address,
                         sex: controller.sex,
                         phoneNumber: controller.numberPhone,
                         verificationCode: codeMail.toString(),

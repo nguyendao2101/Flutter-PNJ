@@ -16,7 +16,7 @@ class FirAuth {
       String passWord,
       String entryPassword,
       String hoTen,
-      String addRess,
+      // String addRess,
       String sex,
       String numberPhone,
       String role,
@@ -35,7 +35,7 @@ class FirAuth {
         _createUser(
           user.user!.uid,
           hoTen,
-          addRess,
+          // addRess,
           sex,
           numberPhone,
           role,
@@ -107,7 +107,7 @@ class FirAuth {
   void _createUser(
       String userId,
       String hoTen,
-      String addRess,
+      // String addRess,
       String sex,
       String numberPhone,
       String? role,
@@ -115,7 +115,7 @@ class FirAuth {
       ) {
     var user = {
       'FullName': hoTen,
-      'Address': addRess,
+      // 'Address': addRess,
       'Sex': sex,
       'NumberPhone': numberPhone,
       'Role': role ?? 'user',
