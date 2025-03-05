@@ -60,7 +60,7 @@ class _ProductCardListViewState extends State<ProductCardListView> {
                       right: 10,
                       child: GestureDetector(
                         onTap: () {
-                          // controller.toggleFavorite(widget.product);
+                          controller.toggleFavorite(widget.product);
                         },
                         child: Obx(
                               () => Container(

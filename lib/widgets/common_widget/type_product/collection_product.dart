@@ -90,18 +90,18 @@ class _CollectionProductState extends State<CollectionProduct> {
           : _filteredProducts.isEmpty
           ? const Center(child: Text("Không có sản phẩm nào"))
           : GridView.builder(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 16.0,
-          childAspectRatio: 0.54,
-        ),
-        itemCount: _filteredProducts.length,
-        itemBuilder: (context, index) {
-          final product = _filteredProducts[index];
-          return ProductCardGridView(product: product);
-        },
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 0.54,
+            ),
+            itemCount: _filteredProducts.length,
+            itemBuilder: (context, index) {
+              final product = _filteredProducts[index];
+              return ProductCardGridView(product: product);
+            },
       ),
     );
   }

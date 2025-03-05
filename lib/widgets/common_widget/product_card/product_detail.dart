@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/widgets/common/image_extention.dart';
 import 'package:flutter_pnj/widgets/common_widget/rating/product_rating_detail.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../view_model/home_view_model.dart';
 import '../../app_bar/detai_product_app_bar.dart';
 import '../button/bassic_button.dart';
 import '../button/bassic_button_inter.dart';
@@ -22,6 +24,7 @@ class _ProductDetailState extends State<ProductDetail> {
   List<Map<String, dynamic>> sizePriceList = [];
   int selectedSizeIndex = 0;
   bool isShowingDescription = true;
+  final controller = Get.put(HomeViewModel());
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     final NumberFormat currencyFormat = NumberFormat("#,###", "vi_VN");
+
     return Scaffold(
       appBar: DetaiProductAppBar(context: context,),
       body: imageUrls.isEmpty
@@ -339,7 +343,9 @@ class _ProductDetailState extends State<ProductDetail> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: BassicButtonInter(onPressed: () {  },
+              child: BassicButtonInter(onPressed: () {
+                controller.addToShoppingCart(widget.productDetail,sizePriceList[selectedSizeIndex]['size']);
+              },
                 title: 'Thêm vào giỏ hàng', sizeTitle: 14, height: 44, fontW: FontWeight.w500,
                 colorButton: const Color(0xffAC3843), radius: 10,),
             ),
