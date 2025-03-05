@@ -3,10 +3,8 @@ import 'package:flutter_pnj/widgets/common/image_extention.dart';
 import 'package:flutter_pnj/widgets/common_widget/rating/product_rating_detail.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../../view_model/home_view_model.dart';
 import '../../app_bar/detai_product_app_bar.dart';
-import '../button/bassic_button.dart';
 import '../button/bassic_button_inter.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -341,13 +339,51 @@ class _ProductDetailState extends State<ProductDetail> {
                 color: Colors.grey.withOpacity(0.5),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: BassicButtonInter(onPressed: () {
-                controller.addToShoppingCart(widget.productDetail,sizePriceList[selectedSizeIndex]['size']);
-              },
-                title: 'Thêm vào giỏ hàng', sizeTitle: 14, height: 44, fontW: FontWeight.w500,
-                colorButton: const Color(0xffAC3843), radius: 10,),
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 20,left: 60),
+                  child: BassicButtonInter(onPressed: () {
+                    controller.addToShoppingCart(widget.productDetail,sizePriceList[selectedSizeIndex]['size']);
+                  },
+                    title: 'Thêm vào giỏ hàng', sizeTitle: 14, height: 44, fontW: FontWeight.w500,
+                    colorButton: const Color(0xffAC3843), radius: 10,),
+                ),
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: GestureDetector(
+                    onTap: () {
+                      controller.toggleFavorite(widget.productDetail);
+                    },
+                    child: Obx(
+                          () => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200], // Màu nền xám nhạt
+                          shape: BoxShape.circle,  // Hình tròn
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(0, 2), // Đổ bóng nhẹ
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(6), // Khoảng cách bên trong
+                        child: Icon(
+                          controller.isFavorite(widget.productDetail)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: controller.isFavorite(widget.productDetail)
+                              ? Colors.red
+                              : Colors.grey,
+                          size: 24, // Kích thước icon
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 30),
             Row(

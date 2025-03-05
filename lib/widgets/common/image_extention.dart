@@ -22,6 +22,7 @@ class ImageAsset{
   static String pay = '$baseImagePathPNG/pay.png';
   static String zalo = '$baseImagePathPNG/zalo.png';
   static String callPhoneNumber = '$baseImagePathPNG/call_phone_number.png';
+  static String users = '$baseImagePathPNG/users.png';
 
 
   // SVG
