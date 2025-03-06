@@ -27,6 +27,7 @@ class _PaymentViewState extends State<PaymentView> {
   double coupon = 0;  // Khai báo coupon là biến trạng thái
   double delivery = 0;  // Khai báo coupon là biến trạng thái
   int price = 0;
+  List<Map<String, dynamic>> selectedPrices = [];
 
   //
   List<Map<String, dynamic>> _stores = [];
@@ -135,27 +136,22 @@ class _PaymentViewState extends State<PaymentView> {
               // Text(widget.product['Quantity']),
               // ListView.builder
               ListView.builder(
-                itemCount: controller.selectedItems?.length ?? 0,
+                itemCount: widget.product.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  // Kiểm tra danh sách rỗng hoặc index không hợp lệ
-                  if (controller.selectedItems == null || controller.selectedItems!.isEmpty || index >= controller.selectedItems!.length) {
+                  final selectedProducts = widget.product; // Gọi hàm để lấy danh sách đã lọc
+
+                  if (index < 0 || index >= selectedProducts.length) {
                     return const SizedBox();
                   }
 
-                  final selectedIndex = controller.selectedItems![index];
+                  final selectedProduct = selectedProducts[index]['originalIndex']; // Lấy sản phẩm từ danh sách đã lọc
 
-                  // Đảm bảo index không bị lỗi
-                  if (selectedIndex < 0 || selectedIndex >= widget.product.length) {
-                    return const SizedBox();
-                  }
-
-                  final item = widget.product[selectedIndex];
-
-                  return _buildCartItem(selectedIndex, currencyFormat);
+                  return _buildCartItem(selectedProduct, currencyFormat);
                 },
               ),
+
             ],
           ),
         ),
@@ -182,7 +178,10 @@ class _PaymentViewState extends State<PaymentView> {
       orElse: () => {},
     );
     price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
+    int quantity = (item['Quantity'] ?? 1).toInt();
 
+    // Thêm giá và số lượng vào danh sách
+    selectedPrices.add({'price': price, 'quantity': quantity});
     return Dismissible(
       key: Key(item['id'].toString()),
       direction: DismissDirection.endToStart,
@@ -326,6 +325,13 @@ class _PaymentViewState extends State<PaymentView> {
       child: Icon(icon, color: Colors.black, size: 18),
     );
   }
+
+  double calculateTotalPrice() {
+    return selectedPrices.fold(0.0, (total, item) {
+      return total + (item['price'] * item['quantity']);
+    });
+  }
+
 
 }
 

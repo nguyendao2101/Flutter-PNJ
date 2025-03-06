@@ -306,38 +306,6 @@ class ByCartViewModel extends GetxController {
     }
   }
 
-  // List<Map<String, dynamic>> checkoutSelectedItems() {
-  //   print('Selected items indexes: $selectedItems');
-  //
-  //   final selectedProducts = selectedItems
-  //       .where((index) => index >= 0 && index < ordersList.length) // Đảm bảo index hợp lệ
-  //       .map((index) {
-  //     print('Selected product at index: $index -> ${ordersList[index]}');
-  //
-  //     final product = Map<String, dynamic>.from(ordersList[index]); // Tạo bản sao sản phẩm
-  //     product['Quantity'] = ordersList[index]['Quantity'] ?? 1; // Đảm bảo có Quantity
-  //     product['originalIndex'] = index; // Lưu lại index gốc
-  //
-  //     return product;
-  //   }).toList();
-  //
-  //   print('Danh sách sản phẩm đã chọn: $selectedProducts');
-  //   return selectedProducts;
-  // }
-
-
-  // List<Map<String, dynamic>> checkoutSelectedItems() {
-  //   // Lấy danh sách sản phẩm được chọn
-  //   final selectedProducts = selectedItems.map((index) {
-  //     final product = Map<String, dynamic>.from(ordersList[index]); // Tạo bản sao của sản phẩm
-  //     product['Quantity'] = ordersList[index]['Quantity'] ?? 1; // Thêm trường Quantit
-  //     return product; // Trả về sản phẩm đã được thêm trường
-  //   }).toList();
-  //
-  //   // Trả về danh sách các sản phẩm đã được chọn
-  //   return selectedProducts;
-  // }
-
   List<Map<String, dynamic>> checkoutSelectedItems() {
     print('Selected items indexes: $selectedItems');
 
