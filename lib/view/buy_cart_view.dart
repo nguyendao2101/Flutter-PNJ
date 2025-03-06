@@ -83,9 +83,9 @@ class _BuyCartViewState extends State<BuyCartView> {
         return FloatingActionButton.extended(
           onPressed: () {
             Get.to(() => PaymentView(
-              // product: controller.checkoutSelectedItems(),
+              product: controller.checkoutSelectedItems(),
             ));
-            controller.checkoutSelectedItems(); // Xử lý thanh toán
+            // controller.checkoutSelectedItems(); // Xử lý thanh toán
           },
           label: const Text(
             'Buy',

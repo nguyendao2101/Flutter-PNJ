@@ -23,6 +23,11 @@ class ImageAsset{
   static String zalo = '$baseImagePathPNG/zalo.png';
   static String callPhoneNumber = '$baseImagePathPNG/call_phone_number.png';
   static String users = '$baseImagePathPNG/users.png';
+  static String downArrow = '$baseImagePathPNG/down-arrow.png';
+  static String money = '$baseImagePathPNG/money.png';
+  static String stripe = '$baseImagePathPNG/stripe.png';
+  static String remove = '$baseImagePathPNG/remove.png';
+  static String check = '$baseImagePathPNG/check.png';
 
 
   // SVG
@@ -41,4 +46,5 @@ class ImageAsset{
   static String horizontal = '$baseImagesPathSVG/horizontal$format';
   static String backButton = '$baseImagesPathSVG/back_button$format';
   static String more = '$baseImagesPathSVG/more$format';
+  static String vnpay = '$baseImagesPathSVG/vnpay$format';
 }

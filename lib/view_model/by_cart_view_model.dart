@@ -17,6 +17,7 @@ class ByCartViewModel extends GetxController {
   final RxList<Map<String, dynamic>> addressList = <Map<String, dynamic>>[].obs;
   final RxList<int> selectedItems = <int>[].obs; // Danh sách index của các sản phẩm được chọn
   final RxList<Map<String, dynamic>> stores = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> products = <Map<String, dynamic>>[].obs;
 
   RxList<Map<String, dynamic>> addCalendarAllEvents =
       <Map<String, dynamic>>[].obs;
@@ -31,6 +32,24 @@ class ByCartViewModel extends GetxController {
     fetchCoupons();
     fetchStores();
     fetchLocationsFromFirebase();
+    fetchProducts();
+  }
+
+  // Hàm lấy danh sách sản phẩm
+  Future<void> fetchProducts() async {
+    try {
+      final QuerySnapshot snapshot =
+      await _firestore.collection('Products').get();
+      final fetchedProducts = snapshot.docs
+          .map((doc) => {
+        'id': doc.id, // Lưu productId
+        ...doc.data() as Map<String, dynamic>,
+      })
+          .toList();
+      products.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
+    } catch (e) {
+      print('Error fetching products: $e');
+    }
   }
 
   // Hàm lấy danh sách cửa hàng
@@ -287,22 +306,68 @@ class ByCartViewModel extends GetxController {
     }
   }
 
-  List<Map<String, dynamic>> checkoutSelectedItems() {
-    // Lấy danh sách sản phẩm được chọn
-    final selectedProducts = selectedItems.map((index) {
-      final product = Map<String, dynamic>.from(ordersList[index]); // Tạo bản sao của sản phẩm
-      product['Quantity'] = ordersList[index]['Quantity'] ?? 1; // Thêm trường Quantity
-      return product; // Trả về sản phẩm đã được thêm trường
-    }).toList();
+  // List<Map<String, dynamic>> checkoutSelectedItems() {
+  //   print('Selected items indexes: $selectedItems');
+  //
+  //   final selectedProducts = selectedItems
+  //       .where((index) => index >= 0 && index < ordersList.length) // Đảm bảo index hợp lệ
+  //       .map((index) {
+  //     print('Selected product at index: $index -> ${ordersList[index]}');
+  //
+  //     final product = Map<String, dynamic>.from(ordersList[index]); // Tạo bản sao sản phẩm
+  //     product['Quantity'] = ordersList[index]['Quantity'] ?? 1; // Đảm bảo có Quantity
+  //     product['originalIndex'] = index; // Lưu lại index gốc
+  //
+  //     return product;
+  //   }).toList();
+  //
+  //   print('Danh sách sản phẩm đã chọn: $selectedProducts');
+  //   return selectedProducts;
+  // }
 
-    // Trả về danh sách các sản phẩm đã được chọn
+
+  // List<Map<String, dynamic>> checkoutSelectedItems() {
+  //   // Lấy danh sách sản phẩm được chọn
+  //   final selectedProducts = selectedItems.map((index) {
+  //     final product = Map<String, dynamic>.from(ordersList[index]); // Tạo bản sao của sản phẩm
+  //     product['Quantity'] = ordersList[index]['Quantity'] ?? 1; // Thêm trường Quantit
+  //     return product; // Trả về sản phẩm đã được thêm trường
+  //   }).toList();
+  //
+  //   // Trả về danh sách các sản phẩm đã được chọn
+  //   return selectedProducts;
+  // }
+
+  List<Map<String, dynamic>> checkoutSelectedItems() {
+    print('Selected items indexes: $selectedItems');
+
+    List<Map<String, dynamic>> selectedProducts = [];
+
+    for (int i = 0; i < selectedItems.length; i++) {
+      int originalIndex = selectedItems[i];
+
+      if (originalIndex >= 0 && originalIndex < ordersList.length) {
+        print('Selected product at index: $originalIndex -> ${ordersList[originalIndex]}');
+
+        final product = Map<String, dynamic>.from(ordersList[originalIndex]); // Tạo bản sao sản phẩm
+        product['Quantity'] = ordersList[originalIndex]['Quantity'] ?? 1;
+        product['originalIndex'] = originalIndex; // Lưu lại index gốc
+
+        selectedProducts.add(product);
+      }
+    }
+
+    print('Danh sách sản phẩm đã chọn: $selectedProducts');
     return selectedProducts;
   }
 
-  double calculateTotal(List<Map<String, dynamic>> product) {
+
+
+  double calculateTotal(List<Map<String, dynamic>> product, int price) {
     double total = 0.0;
     for (var item in product) {
-      total += item['Price']*item['Quantity']; // Cộng dồn giá của mỗi sản phẩm
+      // total += item['Price']*item['Quantity']; // Cộng dồn giá của mỗi sản phẩm
+        total += price*item['Quantity'];
     }
     return total;
   }

@@ -115,9 +115,6 @@ class GetDataViewModel extends GetxController {
       })
           .toList();
       collection.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
-      for(var product in products){
-        print('id product: ${product['nameProduct']}');
-      }
     } catch (e) {
       print('Error fetching products: $e');
     }
@@ -135,9 +132,6 @@ class GetDataViewModel extends GetxController {
       })
           .toList();
       products.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
-      for(var product in products){
-        print('id product: ${product['nameProduct']}');
-      }
     } catch (e) {
       print('Error fetching products: $e');
     }
