@@ -28,6 +28,8 @@ class _PaymentViewState extends State<PaymentView> {
   double delivery = 0;  // Khai báo coupon là biến trạng thái
   int price = 0;
   List<Map<String, dynamic>> selectedPrices = [];
+  double totalPrice = 0;
+  // double total = 0;
 
   //
   List<Map<String, dynamic>> _stores = [];
@@ -67,14 +69,70 @@ class _PaymentViewState extends State<PaymentView> {
     //     ? (widget.product[0]['ImageUrlFacebook'] ?? '') // Lấy giá trị đầu tiên hoặc rỗng
     //     : '';
   }
-
   Future<void> _loadProducts() async {
-    await controllerGetData.fetchProducts();
+    await controllerGetData.fetchProducts(); // Tải dữ liệu sản phẩm
+
     setState(() {
       products = controllerGetData.products;
-      isLoadingProducts = false;
+      selectedPrices = _getSelectedPrices(); // Cập nhật danh sách giá
+      totalPrice = calculateTotalPrice(); // Cập nhật tổng tiền
+    });
+
+    print("✅ Tổng tiền sau khi cập nhật: $totalPrice");
+  }
+
+
+  // Future<void> _loadProducts() async {
+  //   await controllerGetData.fetchProducts();
+  //   setState(() {
+  //     products = controllerGetData.products;
+  //     isLoadingProducts = false;
+  //     totalPrice = calculateTotalPrice();
+  //     print('gia tri cua totalPrice: $totalPrice');
+  //   });
+  // }
+  double calculateTotalPrice() {
+    if (selectedPrices.isEmpty) return 0.0; // Tránh lỗi tính toán trên danh sách rỗng
+
+    return selectedPrices.fold(0.0, (total, item) {
+      return total + ((item['price'] ?? 0.0) * (item['quantity'] ?? 1));
     });
   }
+  List<Map<String, dynamic>> _getSelectedPrices() {
+    List<Map<String, dynamic>> tempList = [];
+
+    for (var item in controller.ordersList) {
+      final product = products.firstWhere(
+            (prod) => prod['id'] == item['idProduct'],
+        orElse: () => {}, // Nếu không tìm thấy, trả về object rỗng
+      );
+
+      if (product.isNotEmpty) {
+        // Lấy danh sách sizePrice
+        List<Map<String, dynamic>> sizePriceList = [];
+        var rawData = product['sizePrice'] as List<dynamic>?;
+        if (rawData != null) {
+          sizePriceList = rawData.map((e) => Map<String, dynamic>.from(e)).toList();
+        }
+
+        // Tìm giá của sản phẩm theo size
+        final matchedSizePrice = sizePriceList.firstWhere(
+              (sp) => sp['size'] == item['size'],
+          orElse: () => {},
+        );
+
+        double price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
+        int quantity = (item['Quantity'] ?? 1).toInt();
+
+        // Thêm vào danh sách selectedPrices
+        tempList.add({'price': price, 'quantity': quantity});
+      }
+    }
+
+    return tempList;
+  }
+
+
 
 
 
@@ -83,7 +141,7 @@ class _PaymentViewState extends State<PaymentView> {
   Widget build(BuildContext context) {
     double x;
     double y;
-    double total1 = controller.calculateTotal(widget.product, price);  // Cập nhật tổng tiền với coupon
+    // double total1 = controller.calculateTotal(selectedPrices);  // Cập nhật tổng tiền với coupon
     // double total = controller.calculateTotal(widget.product) - coupon + delivery;  // Cập nhật tổng tiền với coupon
     final selectedStore = Rx<Map<String, dynamic>?>(null); // Lưu cửa hàng được chọn
     final selectedAddress = Rx<Map<String, dynamic>?>(null); // Lưu cửa hàng được chọn
@@ -151,6 +209,76 @@ class _PaymentViewState extends State<PaymentView> {
                   return _buildCartItem(selectedProduct, currencyFormat);
                 },
               ),
+              const SizedBox(width: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: couponController,
+                        decoration: InputDecoration(
+                          hintText: 'Add Promo code',
+                          hintStyle: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xff32343E),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Poppins',
+                          ),
+                          border: InputBorder.none, // Bỏ viền
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), // Điều chỉnh padding để căn chỉnh nội dung
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide.none, // Bỏ viền khi không focus
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide.none, // Bỏ viền khi có focus
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // String enteredCode = couponController.text.trim(); // Lấy giá trị từ TextField
+                        // var matchingCoupon = controller.coupons.firstWhere(
+                        //       (coupon) => coupon['id'] == enteredCode,
+                        //   orElse: () => {}, // Trả về một map rỗng khi không tìm thấy
+                        // );
+                        //
+                        // if (matchingCoupon.isNotEmpty) {
+                        //   // Nếu tìm thấy mã giảm giá
+                        //   print('Coupon found: ${matchingCoupon['coupon']} VND');
+                        //   setState(() {
+                        //     coupon = matchingCoupon['coupon'].toDouble();  // Cập nhật coupon khi tìm thấy
+                        //   });
+                        // } else {
+                        //   // Nếu không tìm thấy mã giảm giá
+                        //   print('Invalid coupon code');
+                        //   setState(() {
+                        //     coupon = 0;  // Đặt lại coupon nếu không tìm thấy
+                        //   });
+                        // }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: const Color(0xffFBFBFB),
+                        backgroundColor: const Color(0xff981622), // Màu chữ khi button được nhấn
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4), // Bo góc với bán kính 12
+                        ),
+                      ),
+                      child: const Text('Apply'),
+                    ),
+                  ],
+                ),
+              ),
+              _moneyToTal('Total', totalPrice, const Color(0xff5B645F),currencyFormat),
+
+
 
             ],
           ),
@@ -326,10 +454,39 @@ class _PaymentViewState extends State<PaymentView> {
     );
   }
 
-  double calculateTotalPrice() {
-    return selectedPrices.fold(0.0, (total, item) {
-      return total + (item['price'] * item['quantity']);
-    });
+  Widget _moneyToTal(String title, double number, Color colorTitle, NumberFormat currencyFormat){
+    return Padding(
+      padding:  const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: TextStyle(
+            fontSize: 16,
+            color: colorTitle,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Poppins',
+          ),),
+          Row(
+            children: [
+              Text(currencyFormat.format(number).toString(), style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xffA02334),
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Poppins',
+              ),),
+              const SizedBox( width: 8,),
+              const Text('VND', style: TextStyle(
+                fontSize: 16,
+                color: Color(0xff1C1B1F),
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Poppins',
+              ),),
+            ],
+          ),
+
+        ],
+      ),
+    );
   }
 
 

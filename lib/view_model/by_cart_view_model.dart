@@ -331,11 +331,11 @@ class ByCartViewModel extends GetxController {
 
 
 
-  double calculateTotal(List<Map<String, dynamic>> product, int price) {
+  double calculateTotal(List<Map<String, dynamic>> product) {
     double total = 0.0;
     for (var item in product) {
       // total += item['Price']*item['Quantity']; // Cộng dồn giá của mỗi sản phẩm
-        total += price*item['Quantity'];
+        total += item['price']*item['quantity'];
     }
     return total;
   }

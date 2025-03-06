@@ -28,6 +28,8 @@ class ImageAsset{
   static String stripe = '$baseImagePathPNG/stripe.png';
   static String remove = '$baseImagePathPNG/remove.png';
   static String check = '$baseImagePathPNG/check.png';
+  static String logout = '$baseImagePathPNG/logout.png';
+  static String purchased = '$baseImagePathPNG/purchased.png';
 
 
   // SVG
@@ -47,4 +49,11 @@ class ImageAsset{
   static String backButton = '$baseImagesPathSVG/back_button$format';
   static String more = '$baseImagesPathSVG/more$format';
   static String vnpay = '$baseImagesPathSVG/vnpay$format';
+  static String arrowRight = '$baseImagesPathSVG/arrowRight$format';
+  static String personalInfo = '$baseImagesPathSVG/personalInfo$format';
+  static String GPS = '$baseImagesPathSVG/GPS$format';
+  static String cartPlus = '$baseImagesPathSVG/cartPlus$format';
+  static String favourist = '$baseImagesPathSVG/favourist$format';
+  static String notification = '$baseImagesPathSVG/notification$format';
+  // static String arrowRight = '$baseImagesPathSVG/arrowRight$format';
 }

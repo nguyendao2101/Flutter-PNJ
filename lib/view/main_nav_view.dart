@@ -28,7 +28,7 @@ class MainNavView extends StatelessWidget {
             HomeView(),
             CollectionView(),
             BuyCartView(),
-            UserView()
+            ProfileView()
           ],
         ),
         bottomNavigationBar: const CustomBottomNavigationBar(),
@@ -126,8 +126,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
                       text: 'Profiles',
                       icon: SvgPicture.asset(
                         controller.selectedTab.value == 3
-                            ? ImageAsset.user
-                            : ImageAsset.userUn,
+                            ? ImageAsset.userUn
+                            : ImageAsset.user,
                         width: 26,
                         height: 26,
                       ),
