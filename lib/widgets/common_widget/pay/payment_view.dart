@@ -29,7 +29,7 @@ class _PaymentViewState extends State<PaymentView> {
   int price = 0;
   List<Map<String, dynamic>> selectedPrices = [];
   double totalPrice = 0;
-  // double total = 0;
+  double total = 0;
 
   //
   List<Map<String, dynamic>> _stores = [];
@@ -76,17 +76,6 @@ class _PaymentViewState extends State<PaymentView> {
       isLoadingProducts = false;
     });
   }
-
-
-  // Future<void> _loadProducts() async {
-  //   await controllerGetData.fetchProducts();
-  //   setState(() {
-  //     products = controllerGetData.products;
-  //     isLoadingProducts = false;
-  //     totalPrice = calculateTotalPrice();
-  //     print('gia tri cua totalPrice: $totalPrice');
-  //   });
-  // }
   double calculateTotalPrice() {
     if (selectedPrices.isEmpty) return 0.0; // Tránh lỗi tính toán trên danh sách rỗng
 
@@ -272,10 +261,7 @@ class _PaymentViewState extends State<PaymentView> {
                   ],
                 ),
               ),
-              _moneyToTal('Total', totalPrice, const Color(0xff5B645F),currencyFormat),
-
-
-
+              _moneyToTal('Total', total, const Color(0xff5B645F),currencyFormat),
             ],
           ),
         ),
@@ -303,9 +289,33 @@ class _PaymentViewState extends State<PaymentView> {
     );
     price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
     int quantity = (item['Quantity'] ?? 1).toInt();
+    if (index == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          total = 0; // Đặt lại total để tránh cộng dồn
+          for (var order in widget.product) {
+            final prod = products.firstWhere(
+                  (p) => p['id'] == order['idProduct'],
+              orElse: () => {},
+            );
 
-    // Thêm giá và số lượng vào danh sách
-    selectedPrices.add({'price': price, 'quantity': quantity});
+            var sizes = prod['sizePrice'] as List<dynamic>?;
+            List<Map<String, dynamic>> sizeList = sizes != null
+                ? sizes.map((e) => Map<String, dynamic>.from(e)).toList()
+                : [];
+
+            var matched = sizeList.firstWhere(
+                  (sp) => sp['size'] == order['size'],
+              orElse: () => {},
+            );
+
+            int itemPrice = matched.isNotEmpty ? matched['price'] ?? 0 : 0;
+            int itemQuantity = (order['Quantity'] ?? 1).toInt();
+            total += itemPrice * itemQuantity;
+          }
+        });
+      });
+    }
     return Dismissible(
       key: Key(item['id'].toString()),
       direction: DismissDirection.endToStart,
