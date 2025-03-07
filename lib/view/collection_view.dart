@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view_model/get_data_view_model.dart';
@@ -74,7 +75,22 @@ class _CollectionViewState extends State<CollectionView> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20B%E1%BB%99%20s%C6%B0u%20t%E1%BA%ADp%2FBosuutap_Onlyyou.png?alt=media&token=39ff59eb-d3e8-45d3-9d2a-d54cdaaf32fd'),
+                    // Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20B%E1%BB%99%20s%C6%B0u%20t%E1%BA%ADp%2FBosuutap_Onlyyou.png?alt=media&token=39ff59eb-d3e8-45d3-9d2a-d54cdaaf32fd'),
+                    CachedNetworkImage(
+                      imageUrl: 'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20B%E1%BB%99%20s%C6%B0u%20t%E1%BA%ADp%2FBosuutap_Onlyyou.png?alt=media&token=39ff59eb-d3e8-45d3-9d2a-d54cdaaf32fd',
+                      width: double.infinity,
+                      // height: 200,
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) => const Center(child: SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[300],
+                        height: 200,
+                        child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     const Text('Vì em là duy nhất', style: TextStyle(
                       fontSize: 24,
@@ -92,7 +108,22 @@ class _CollectionViewState extends State<CollectionView> {
                           fontWeight: FontWeight.w400,),
                         textAlign: TextAlign.center,),
                     ),
-                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20trang%20s%E1%BB%A9c%2FTrangsuc_nhan.png?alt=media&token=71f900cb-5a5a-416a-a344-1b47e9a596dc', height: 106,),
+                    // Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20trang%20s%E1%BB%A9c%2FTrangsuc_nhan.png?alt=media&token=71f900cb-5a5a-416a-a344-1b47e9a596dc', height: 106,),
+                    CachedNetworkImage(
+                      imageUrl: 'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FImage%20Home%2FImage%20trang%20s%E1%BB%A9c%2FTrangsuc_nhan.png?alt=media&token=71f900cb-5a5a-416a-a344-1b47e9a596dc',
+                      // width: double.infinity,
+                      height: 106,
+                      // fit: BoxFit.cover,
+                      placeholder: (context, url) => const Center(child: SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[300],
+                        height: 200,
+                        child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 100),
@@ -107,7 +138,22 @@ class _CollectionViewState extends State<CollectionView> {
                     Column(
                       children: [
                         const SizedBox(height: 20,),
-                        Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20152938.png?alt=media&token=9090aaba-a778-4c7e-965c-75e8ebd95b66',),
+                        // Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20152938.png?alt=media&token=9090aaba-a778-4c7e-965c-75e8ebd95b66',),
+                        CachedNetworkImage(
+                          imageUrl: 'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20152938.png?alt=media&token=9090aaba-a778-4c7e-965c-75e8ebd95b66',
+                          width: double.infinity,
+                          // height: 200,
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => const Center(child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey[300],
+                            height: 200,
+                            child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                          ),
+                        ),
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -163,9 +209,24 @@ class _CollectionViewState extends State<CollectionView> {
                 child: Stack(
                   children: [
                     Positioned.fill( // Ảnh nền lấp đầy Container
-                      child: Image.network(
-                        'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20155924.png?alt=media&token=b024b5a8-c061-49c2-9b69-dfcc2eec80ea',
+                      // child: Image.network(
+                      //   'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20155924.png?alt=media&token=b024b5a8-c061-49c2-9b69-dfcc2eec80ea',
+                      //   fit: BoxFit.cover,
+                      // ),
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20155924.png?alt=media&token=b024b5a8-c061-49c2-9b69-dfcc2eec80ea',
+                        width: double.infinity,
+                        // height: 200,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(child: SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[300],
+                          height: 200,
+                          child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                        ),
                       ),
                     ),
                     Align(
@@ -200,7 +261,22 @@ class _CollectionViewState extends State<CollectionView> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20162938.png?alt=media&token=4a37cf34-db96-4180-a203-9e7e3af4fb10'),
+                    // Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20162938.png?alt=media&token=4a37cf34-db96-4180-a203-9e7e3af4fb10'),
+                    CachedNetworkImage(
+                      imageUrl: 'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20162938.png?alt=media&token=4a37cf34-db96-4180-a203-9e7e3af4fb10',
+                      width: double.infinity,
+                      // height: 200,
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) => const Center(child: SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[300],
+                        height: 200,
+                        child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                      ),
+                    ),
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -288,7 +364,22 @@ class _CollectionViewState extends State<CollectionView> {
                         ],
                       ),
                     ),
-                    Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20164336.png?alt=media&token=3462d822-26a1-499a-aeab-c86e79d02d47'),
+                    // Image.network('https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20164336.png?alt=media&token=3462d822-26a1-499a-aeab-c86e79d02d47'),
+                    CachedNetworkImage(
+                      imageUrl: 'https://firebasestorage.googleapis.com/v0/b/duan-4904c.appspot.com/o/flutter_pnj%2FScreenshot%202025-02-26%20164336.png?alt=media&token=3462d822-26a1-499a-aeab-c86e79d02d47',
+                      width: double.infinity,
+                      // height: 200,
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) => const Center(child: SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[300],
+                        height: 200,
+                        child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                      ),
+                    ),
                     const SizedBox(height: 40,)
                   ],
                 ),

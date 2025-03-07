@@ -70,15 +70,11 @@ class _PaymentViewState extends State<PaymentView> {
     //     : '';
   }
   Future<void> _loadProducts() async {
-    await controllerGetData.fetchProducts(); // Tải dữ liệu sản phẩm
-
+    await controllerGetData.fetchProducts();
     setState(() {
       products = controllerGetData.products;
-      selectedPrices = _getSelectedPrices(); // Cập nhật danh sách giá
-      totalPrice = calculateTotalPrice(); // Cập nhật tổng tiền
+      isLoadingProducts = false;
     });
-
-    print("✅ Tổng tiền sau khi cập nhật: $totalPrice");
   }
 
 

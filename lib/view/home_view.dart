@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view_model/get_data_view_model.dart';
@@ -146,7 +147,7 @@ class _HomeViewState extends State<HomeView> {
               child: Stack(
                 alignment: Alignment.bottomCenter, // Căn chấm xuống dưới ảnh
                 children: [
-                  _isLoadingAdvertisement ? Center(child: CircularProgressIndicator())
+                  _isLoadingAdvertisement ? const Center(child: CircularProgressIndicator())
                       : _advertisement.isNotEmpty
                       ? CarouselSlider.builder(
                     options: CarouselOptions(
@@ -167,21 +168,21 @@ class _HomeViewState extends State<HomeView> {
 
                       return ClipRRect(
                         child: imageUrl.isNotEmpty
-                            ? Image.network(
-                          imageUrl,
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.fill,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(child: CircularProgressIndicator());
-                          },
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            color: Colors.grey[300],
-                            height: 200,
-                            child: const Center(child: Icon(Icons.broken_image, size: 40)),
-                          ),
-                        )
+                            ? CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              width: double.infinity,
+                              height: 200,
+                              fit: BoxFit.fill,
+                              placeholder: (context, url) => const Center(child: SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.grey[300],
+                                height: 200,
+                                child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                              ),
+                            )
                             : Container(
                           color: Colors.grey[300],
                           height: 200,
@@ -189,7 +190,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       );
                     },
-                  ) : Center(child: Text("Không có dữ liệu")),
+                  ) : const Center(child: Text("Không có dữ liệu")),
                   Positioned(
                     bottom: 10, // Khoảng cách từ đáy ảnh
                     child: AnimatedSmoothIndicator(

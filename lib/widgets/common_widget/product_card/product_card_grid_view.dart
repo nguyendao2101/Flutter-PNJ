@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view/login_view.dart';
 import 'package:flutter_pnj/widgets/common_widget/product_card/product_detail.dart';
@@ -65,11 +66,16 @@ class _ProductCardGridViewState extends State<ProductCardGridView> {
                   ),
                   child: Stack(
                     children: [
-                      Image.network(
-                        widget.product['productImg'][0] ?? '',
-                        width: 201,
+                      CachedNetworkImage(
+                        imageUrl: widget.product['productImg'][0] ?? '',
                         height: 170,
-                        fit: BoxFit.cover,
+                        width: 201,
+                        placeholder: (context, url) => const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: const CircularProgressIndicator(strokeWidth: 2)), // Hiển thị khi tải
+                        errorWidget: (context, url, error) => const Icon(Icons.error), // Hiển thị khi lỗi
+                        fit: BoxFit.fill, // Căn chỉnh hình ảnh
                       ),
                       Positioned(
                         top: 10,

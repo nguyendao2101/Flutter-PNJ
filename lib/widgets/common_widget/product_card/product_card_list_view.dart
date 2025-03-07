@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view/login_view.dart';
 import 'package:flutter_pnj/widgets/common_widget/product_card/product_detail.dart';
@@ -44,16 +45,21 @@ class _ProductCardListViewState extends State<ProductCardListView> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
                   color: Colors.grey.withOpacity(0.3)
                 ),
                 child: Stack(
                   children: [
-                    Image.network(
-                      widget.product['productImg'][0] ?? '',
-                      width: 201,
+                    CachedNetworkImage(
+                      imageUrl: widget.product['productImg'][0] ?? '',
                       height: 170,
-                      fit: BoxFit.fill,
+                      width: 201,
+                      placeholder: (context, url) => const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: const CircularProgressIndicator(strokeWidth: 2)), // Hiển thị khi tải
+                      errorWidget: (context, url, error) => const Icon(Icons.error), // Hiển thị khi lỗi
+                      fit: BoxFit.fill, // Căn chỉnh hình ảnh
                     ),
                     Positioned(
                       top: 10,
@@ -67,7 +73,7 @@ class _ProductCardListViewState extends State<ProductCardListView> {
                             decoration: BoxDecoration(
                               color: Colors.grey[200], // Màu nền xám nhạt
                               shape: BoxShape.circle,  // Hình tròn
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                   color: Colors.black12,
                                   blurRadius: 4,

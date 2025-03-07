@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/widgets/common/image_extention.dart';
 import 'package:flutter_pnj/widgets/common_widget/rating/product_rating_detail.dart';
@@ -61,7 +62,7 @@ class _ProductDetailState extends State<ProductDetail> {
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.grey.withOpacity(0.3),
                   image: DecorationImage(
-                    image: NetworkImage(imageUrls[selectedImageIndex]),
+                    image: CachedNetworkImageProvider(imageUrls[selectedImageIndex]),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -97,7 +98,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                               borderRadius: BorderRadius.circular(20),
                               image: DecorationImage(
-                                image: NetworkImage(imageUrls[index]),
+                                image: CachedNetworkImageProvider(imageUrls[index]),
                                 fit: BoxFit.cover,
                               ),
                             ),
