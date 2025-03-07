@@ -82,7 +82,7 @@ class ByCartViewModel extends GetxController {
   Future<void> fetchCoupons() async {
     try {
       print('Fetching coupons...');
-      final QuerySnapshot snapshot = await _firestore.collection('coupon').get();
+      final QuerySnapshot snapshot = await _firestore.collection('Coupons').get();
       print('Raw snapshot data: ${snapshot.docs}');
 
       final fetchedCoupons = snapshot.docs.map((doc) {

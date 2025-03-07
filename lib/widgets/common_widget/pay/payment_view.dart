@@ -57,6 +57,7 @@ class _PaymentViewState extends State<PaymentView> {
   void initState() {
     super.initState();
     _loadProducts();
+    controller.fetchCoupons();
     // controller.fetchStores();
     //
     // // Sửa việc chuyển đổi `Name` sang kiểu String
@@ -229,25 +230,25 @@ class _PaymentViewState extends State<PaymentView> {
                     const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
-                        // String enteredCode = couponController.text.trim(); // Lấy giá trị từ TextField
-                        // var matchingCoupon = controller.coupons.firstWhere(
-                        //       (coupon) => coupon['id'] == enteredCode,
-                        //   orElse: () => {}, // Trả về một map rỗng khi không tìm thấy
-                        // );
-                        //
-                        // if (matchingCoupon.isNotEmpty) {
-                        //   // Nếu tìm thấy mã giảm giá
-                        //   print('Coupon found: ${matchingCoupon['coupon']} VND');
-                        //   setState(() {
-                        //     coupon = matchingCoupon['coupon'].toDouble();  // Cập nhật coupon khi tìm thấy
-                        //   });
-                        // } else {
-                        //   // Nếu không tìm thấy mã giảm giá
-                        //   print('Invalid coupon code');
-                        //   setState(() {
-                        //     coupon = 0;  // Đặt lại coupon nếu không tìm thấy
-                        //   });
-                        // }
+                        String enteredCode = couponController.text.trim(); // Lấy giá trị từ TextField
+                        var matchingCoupon = controller.coupons.firstWhere(
+                              (coupon) => coupon['id'] == enteredCode,
+                          orElse: () => {}, // Trả về một map rỗng khi không tìm thấy
+                        );
+
+                        if (matchingCoupon.isNotEmpty) {
+                          // Nếu tìm thấy mã giảm giá
+                          print('Coupon found: ${matchingCoupon['discount']} VND');
+                          setState(() {
+                            coupon = matchingCoupon['discount'].toDouble();  // Cập nhật coupon khi tìm thấy
+                          });
+                        } else {
+                          // Nếu không tìm thấy mã giảm giá
+                          print('Invalid coupon code');
+                          setState(() {
+                            coupon = 0;  // Đặt lại coupon nếu không tìm thấy
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: const Color(0xffFBFBFB),
@@ -262,6 +263,9 @@ class _PaymentViewState extends State<PaymentView> {
                 ),
               ),
               _moneyToTal('Total', total, const Color(0xff5B645F),currencyFormat),
+              _moneyToTal('Delivery fees', delivery, const Color(0xff5B645F),currencyFormat),
+              _moneyToTal('Promo', coupon, const Color(0xff5B645F),currencyFormat),
+              _moneyToTal('Total', (total - coupon + delivery), const Color(0xff5B645F),currencyFormat),
             ],
           ),
         ),
