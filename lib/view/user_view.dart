@@ -4,6 +4,7 @@ import '../view_model/profile_view_model.dart';
 import '../widgets/common/image_extention.dart';
 import '../widgets/common_widget/profile/function_png.dart';
 import '../widgets/common_widget/profile/function_profile.dart';
+import '../widgets/common_widget/profile/personal_info.dart';
 import 'login_view.dart';
 
 class ProfileView extends StatefulWidget {
@@ -29,7 +30,7 @@ class _ProfileViewState extends State<ProfileView> {
                   fontSize: 24,
                   color: Color(0xff303030),
                   fontWeight: FontWeight.w400,
-                  fontFamily: 'Poppins',
+                  fontFamily: 'Inter',
                 ),
               )
             ],
@@ -68,12 +69,12 @@ class _ProfileViewState extends State<ProfileView> {
                         fontSize: 16,
                         color: Color(0xff111A2C),
                         fontWeight: FontWeight.w600,
-                        fontFamily: 'Poppins',
+                        fontFamily: 'Inter',
                       ),
                     ),
                   ),
                   const Text(
-                    'Explore the food',
+                    'Explore the PNJ jewelry',
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xff111A2C),
@@ -98,7 +99,7 @@ class _ProfileViewState extends State<ProfileView> {
                             children: [
                               GestureDetector(
                                   onTap: () {
-                                    // Get.to(() => const PersonalInfo());
+                                    Get.to(() => const PersonalInfo());
                                   },
                                   child: FunctionProfile(
                                     image: ImageAsset.personalInfo,
