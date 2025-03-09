@@ -6,6 +6,7 @@ import '../widgets/common_widget/profile/address.dart';
 import '../widgets/common_widget/profile/function_png.dart';
 import '../widgets/common_widget/profile/function_profile.dart';
 import '../widgets/common_widget/profile/personal_info.dart';
+import 'buy_cart_view.dart';
 import 'login_view.dart';
 
 class ProfileView extends StatefulWidget {
@@ -152,7 +153,7 @@ class _ProfileViewState extends State<ProfileView> {
                               GestureDetector(
                                   onTap: () {
                                     print('da nhan');
-                                    // Get.to(() => const OrdersView());
+                                    Get.to(() => const BuyCartView());
                                   },
                                   child: FunctionProfile(
                                     image: ImageAsset.cartPlus,
