@@ -4,9 +4,6 @@ import 'package:flutter_pnj/view/sign_up_view.dart';
 import 'package:flutter_pnj/view_model/login_view_model.dart';
 import 'package:flutter_pnj/widgets/common/image_extention.dart';
 import 'package:flutter_pnj/widgets/common_widget/button/bassic_button.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
 import '../widgets/common_widget/check_box/check_box_login.dart';

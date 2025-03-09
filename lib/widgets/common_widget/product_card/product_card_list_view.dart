@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view/login_view.dart';
 import 'package:flutter_pnj/widgets/common_widget/product_card/product_detail.dart';
 import 'package:flutter_pnj/widgets/common_widget/rating/product_rating_display.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 

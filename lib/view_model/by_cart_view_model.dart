@@ -108,6 +108,49 @@ class ByCartViewModel extends GetxController {
       userId.value = currentUser.uid;
     }
   }
+  Future<Map<String, String>> listenToAddress() async {
+    DatabaseReference addressRef =
+    FirebaseDatabase.instance.ref('users/${userId.value}/addAddress');
+
+    try {
+      DatabaseEvent event = await addressRef.once();
+      DataSnapshot snapshot = event.snapshot;
+
+      print('🔥 Dữ liệu từ Firebase: ${snapshot.value}');
+
+      if (snapshot.value == null) {
+        return {}; // Trả về Map rỗng nếu không có dữ liệu
+      }
+
+      final dynamic rawData = snapshot.value;
+      Map<String, String> addressMap = {};
+
+      if (rawData is List) {
+        // Trường hợp dữ liệu là List
+        for (int i = 0; i < rawData.length; i++) {
+          var item = rawData[i];
+          if (item is Map) {
+            String address = "${item['street'] ?? 'N/A'}, ${item['city'] ?? 'N/A'}, ${item['country'] ?? 'N/A'}";
+            addressMap[i.toString()] = address;
+          }
+        }
+      } else if (rawData is Map) {
+        // Trường hợp dữ liệu là Map
+        rawData.forEach((key, value) {
+          if (value is Map) {
+            String address = "${value['street'] ?? 'N/A'}, ${value['city'] ?? 'N/A'}, ${value['country'] ?? 'N/A'}";
+            addressMap[key] = address;
+          }
+        });
+      }
+
+      print("✅ Danh sách địa chỉ: $addressMap");
+      return addressMap;
+    } catch (e) {
+      print("❌ Lỗi khi lấy dữ liệu từ Firebase: $e");
+      return {};
+    }
+  }
 
   Future<void> listenToOrders() async {
     DatabaseReference officialRidersRef =

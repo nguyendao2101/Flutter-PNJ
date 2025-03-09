@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pnj/firebase_options.dart';
 import 'package:flutter_pnj/view/main_nav_view.dart';
 import 'package:flutter_pnj/view/splash_view.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
+
+import 'model/service/consts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await dotenv.load(fileName: ".env");
+  Stripe.publishableKey = stripePublishableKey;
   runApp(const MyApp());
 }
 
