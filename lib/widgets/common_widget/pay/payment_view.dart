@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view_model/by_cart_view_model.dart';
 import 'package:flutter_pnj/widgets/common_widget/pay/vnpay.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -457,7 +458,7 @@ class _PaymentViewState extends State<PaymentView> {
 
                       if (responseCode == '00') {
                         await Future.delayed(Duration(seconds: 1));
-                        _showPaymentMethod(context, selectedPaymentMethod);
+                        showPaymentMethod(context, selectedPaymentMethod);
                         await controllerGetData.addOrderToFirestore(
                           storeId: selectedStore.value!['id'],
                           userId: controller.userId.toString(),
@@ -484,8 +485,9 @@ class _PaymentViewState extends State<PaymentView> {
                         controllerHome.removeAllFromPurchasedCart(widget.product);
                       }
                     } else if (selectedPaymentMethod.value?['id'] == '3') {
-                      StripeService.instance.makePayment(total - coupon);
-                      _showPaymentMethod(context, selectedPaymentMethod);
+                      // StripeService.instance.makePayment(total - coupon);
+                      // showPaymentMethod(context, selectedPaymentMethod);
+                      handlePayment(total,coupon);
                       await controllerGetData.addOrderToFirestore(
                         storeId: selectedStore.value!['id'],
                         userId: controller.userId.toString(),
@@ -506,7 +508,7 @@ class _PaymentViewState extends State<PaymentView> {
                       // controllerHome.addAllToPurchasedCart(widget.product);
                       controllerHome.removeAllFromPurchasedCart(widget.product);
                     } else {
-                      _showPaymentMethod(context, selectedPaymentMethod);
+                      showPaymentMethod(context, selectedPaymentMethod);
                       await controllerGetData.addOrderToFirestore(
                         storeId: selectedStore.value!['id'],
                         userId: controller.userId.toString(),
@@ -779,7 +781,7 @@ class _PaymentViewState extends State<PaymentView> {
     );
   }
 
-  void _showPaymentMethod(BuildContext context, Rxn<Map<String, String>> selectedPaymentMethod) {
+  void showPaymentMethod(BuildContext context, Rxn<Map<String, String>> selectedPaymentMethod) {
     showModalBottomSheet(
       context: context,
       barrierColor: Colors.grey.withOpacity(0.8),
@@ -1001,74 +1003,28 @@ class _PaymentViewState extends State<PaymentView> {
       },
     );
   }
-  // Future<void> onPayment(BuildContext context, double amount) async {
-  //   final paymentUrl = VNPAYFlutter.instance.generatePaymentUrl(
-  //     url: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-  //     version: '2.0.1',
-  //     tmnCode: 'YLLVXBWY',
-  //     txnRef: DateTime.now().millisecondsSinceEpoch.toString(),
-  //     orderInfo: 'Pay $amount VND',
-  //     amount: amount,
-  //     returnUrl: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
-  //     ipAdress: '192.168.10.10',
-  //     vnpayHashKey: '1J9MHQHA5NK9C4J3D26CZO1HAPO02IJY',
-  //     vnPayHashType: VNPayHashType.HMACSHA512,
-  //     vnpayExpireDate: DateTime.now().add(const Duration(hours: 1)),
-  //   );
-  //
-  //   // Mở WebView với URL thanh toán
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => PaymentWebView(paymentUrl: paymentUrl),
-  //     ),
-  //   );
-  // }
+  void handlePayment(double total, double coupon) async {
+    String? paymentIntent = await StripeService.instance.makePayment(total - coupon);
 
+    if (paymentIntent != null) {
+      try {
+        await Stripe.instance.presentPaymentSheet();
+        showPaymentMethod(context,selectedPaymentMethod);
+      } catch (e) {
+        if (e is StripeException) {
+          print("Lỗi Stripe: ${e.error.localizedMessage}");
+          _showPaymentMethodFail(context,selectedPaymentMethod);
+        } else {
+          print("Lỗi không xác định: $e");
+        }
+        // TODO: Xử lý lỗi khi thanh toán thất bại, hiển thị thông báo cho người dùng
+      }
+    } else {
+      print("Không thể khởi tạo thanh toán!");
+      _showPaymentMethodFail(context,selectedPaymentMethod);
+    }
+  }
 
-// Future<void> onPayment(double amount) async {
-//     // Sử dụng Completer để chờ kết quả trả về
-//     final completer = Completer<void>();
-//
-//     final paymentUrl = VNPAYFlutter.instance.generatePaymentUrl(
-//       url: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-//       version: '2.0.1',
-//       tmnCode: 'YLLVXBWY',
-//       txnRef: DateTime.now().millisecondsSinceEpoch.toString(),
-//       orderInfo: 'Pay $amount VND',
-//       amount: amount,
-//       returnUrl: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
-//       ipAdress: '192.168.10.10',
-//       vnpayHashKey: '1J9MHQHA5NK9C4J3D26CZO1HAPO02IJY',
-//       vnPayHashType: VNPayHashType.HMACSHA512,
-//       vnpayExpireDate: DateTime.now().add(const Duration(hours: 1)),
-//     );
-//
-//     await VNPAYFlutter.instance.show(
-//       paymentUrl: paymentUrl,
-//       onPaymentSuccess: (params) {
-//         print('Params on success: $params');
-//         responseCode = params.containsKey('vnp_ResponseCode')
-//             ? params['vnp_ResponseCode']
-//             : 'No Response Code';
-//         print('Response Code on success: $responseCode');
-//
-//         // Đánh dấu là hoàn tất thanh toán thành công
-//         completer.complete();
-//       },
-//       onPaymentError: (params) {
-//         print('Params on error: $params');
-//         responseCode = 'Error';
-//         print('Response Code on error: $responseCode');
-//
-//         // Đánh dấu là hoàn tất thanh toán thất bại
-//         completer.complete();
-//       },
-//     );
-//
-//     // Chờ kết quả trả về từ VNPAY
-//     await completer.future;
-//   }
 }
 
 
