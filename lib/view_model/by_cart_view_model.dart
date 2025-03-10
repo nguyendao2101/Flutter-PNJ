@@ -18,6 +18,7 @@ class ByCartViewModel extends GetxController {
   final RxList<int> selectedItems = <int>[].obs; // Danh sách index của các sản phẩm được chọn
   final RxList<Map<String, dynamic>> stores = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> products = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> favorite = <Map<String, dynamic>>[].obs;
 
   RxList<Map<String, dynamic>> addCalendarAllEvents =
       <Map<String, dynamic>>[].obs;

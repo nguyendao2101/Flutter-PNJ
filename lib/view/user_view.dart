@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../view_model/profile_view_model.dart';
 import '../widgets/common/image_extention.dart';
 import '../widgets/common_widget/profile/address.dart';
+import '../widgets/common_widget/profile/favorite.dart';
 import '../widgets/common_widget/profile/function_png.dart';
 import '../widgets/common_widget/profile/function_profile.dart';
 import '../widgets/common_widget/profile/personal_info.dart';
@@ -164,7 +165,7 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                               GestureDetector(
                                   onTap: () {
-                                    // Get.to(() => const Favourite());
+                                    Get.to(() => const Favorite());
                                   },
                                   child: FunctionProfile(
                                     image: ImageAsset.favourist,

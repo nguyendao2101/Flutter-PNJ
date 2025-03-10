@@ -824,7 +824,7 @@ class _PaymentViewState extends State<PaymentView> {
                         const SizedBox(height: 64),
 
                         const Text(
-                          'Your order has been confirmed by HungryHub.',
+                          'Your order has been confirmed by PNJ.',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -959,7 +959,7 @@ class _PaymentViewState extends State<PaymentView> {
                         const SizedBox(height: 64),
 
                         const Text(
-                          'Your order has been confirmed by HungryHub.',
+                          'Your order has been confirmed by PNJ.',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
