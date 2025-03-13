@@ -418,7 +418,7 @@ class HomeViewModel extends GetxController {
     }
   }
 
-  //xoa
+  //xoa shoppingCart
   Future<void> removeFromShoppingCart(String productId, int size) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -429,114 +429,54 @@ class HomeViewModel extends GetxController {
       String userId = currentUser.uid;
       DatabaseReference cartRef = _database.child('users/$userId/shoppingCart');
 
-      // Lấy danh sách giỏ hàng từ Firebase
+      // 📌 Lấy danh sách giỏ hàng từ Firebase
       final snapshot = await cartRef.get();
       if (!snapshot.exists || snapshot.value == null) {
         Get.snackbar("Info", "Shopping cart is empty!", snackPosition: SnackPosition.TOP);
         return;
       }
 
-      if (snapshot.value is! List) {
-        Get.snackbar("Error", "Invalid cart data!", snackPosition: SnackPosition.TOP);
-        return;
+      // 📌 Firebase trả về danh sách → Ép kiểu thành List
+      List<dynamic> currentCart = List.from(snapshot.value as List<dynamic>);
+
+      // 📌 In ra danh sách sản phẩm trước khi xóa
+      for (var item in currentCart) {
+        // Ép kiểu về Map<String, dynamic>
+        if (item is Map<Object?, Object?>) {
+          Map<String, dynamic> castedItem = item.map((key, value) => MapEntry(key.toString(), value));
+        }
       }
 
-      List<dynamic> currentCart = List<dynamic>.from(snapshot.value as List);
-
-      // Kiểm tra số lượng trước khi xóa
-      int initialLength = currentCart.length;
-      currentCart.removeWhere((item) =>
-      item is Map<String, dynamic> &&
-          item["idProduct"] == productId &&
-          item["size"] == size);
-
-      bool isRemoved = currentCart.length < initialLength;
-
-      if (isRemoved) {
-        if (currentCart.isEmpty) {
-          await cartRef.remove(); // Xóa toàn bộ node giỏ hàng nếu không còn sản phẩm nào
-        } else {
-          await cartRef.set(currentCart); // Cập nhật giỏ hàng mới
+      // 🔍 Tìm sản phẩm cần xóa
+      int indexToRemove = -1;
+      for (int i = 0; i < currentCart.length; i++) {
+        var item = currentCart[i];
+        print('Kieu di lieu cua item: ${item.runtimeType}');
+        if (item is Map<Object?, Object?>) {
+          bool isSameId = item["idProduct"] == productId;
+          bool isSameSize = int.tryParse(item["size"].toString()) == size;
+          if (isSameId && isSameSize) {
+            indexToRemove = i;
+            break;
+          }
         }
+      }
 
-        // Cập nhật giỏ hàng trong ứng dụng
-        shoppingCart.clear();
-        shoppingCart.addAll(currentCart.cast<Map<String, dynamic>>());
-        update();
-
-        // ✅ In ra giỏ hàng sau khi xóa
-        print("Giỏ hàng sau khi xóa: $currentCart");
+      if (indexToRemove != -1) {
+        // 📌 Xóa sản phẩm theo index trong danh sách
+        await cartRef.child(indexToRemove.toString()).remove();
+        print("✅ Đã xóa sản phẩm ở index: $indexToRemove");
 
         Get.snackbar("Success", "Product removed from ShoppingCart!", snackPosition: SnackPosition.TOP);
       } else {
+        print("❌ Không tìm thấy sản phẩm cần xóa");
         Get.snackbar("Info", "Product not found in ShoppingCart!", snackPosition: SnackPosition.TOP);
       }
     } catch (e) {
       Get.snackbar("Error", "Failed to remove product from ShoppingCart!", snackPosition: SnackPosition.TOP);
+      print("❌ Error: $e");
     }
   }
-
-
-
-
-
-
-  // Future<void> removeFromShoppingCart(Map<String, dynamic> product) async {
-  //   try {
-  //     User? currentUser = FirebaseAuth.instance.currentUser;
-  //
-  //     if (currentUser == null) {
-  //       throw Exception("No user is signed in.");
-  //     }
-  //
-  //     String userId = currentUser.uid;
-  //
-  //     // Lấy danh sách ShoppingCart hiện tại từ Firebase
-  //     final snapshot = await _database.child('users/$userId/ShoppingCart').get();
-  //     List<dynamic> currentCart = [];
-  //
-  //     if (snapshot.exists && snapshot.value is List) {
-  //       currentCart = List<dynamic>.from(snapshot.value as List);
-  //     }
-  //
-  //     // Kiểm tra xem sản phẩm có trong giỏ hàng không
-  //     bool isProductInCart = currentCart.any((item) => item['id'] == product['id']); // Kiểm tra dựa trên 'id' của sản phẩm
-  //
-  //     if (isProductInCart) {
-  //       // Xóa sản phẩm khỏi danh sách giỏ hàng
-  //       currentCart.removeWhere((item) => item['id'] == product['id']);
-  //
-  //       // Ghi danh sách cập nhật lên Firebase
-  //       await _database.child('users/$userId/ShoppingCart').set(currentCart);
-  //
-  //       // Cập nhật lại shoppingCart và thông báo thành công
-  //       shoppingCart.clear();
-  //       shoppingCart.addAll(currentCart.cast<Map<String, dynamic>>()); // Cập nhật shoppingCart bằng cách cast lại dữ liệu
-  //       update(); // Cập nhật UI
-  //
-  //       Get.snackbar(
-  //         "Success",
-  //         "Product removed from ShoppingCart!",
-  //         snackPosition: SnackPosition.TOP,
-  //       );
-  //     } else {
-  //       Get.snackbar(
-  //         "Success",
-  //         "Product removed from ShoppingCart!",
-  //         snackPosition: SnackPosition.TOP,
-  //       );
-  //     }
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Success",
-  //       "Product removed from ShoppingCart!",
-  //       snackPosition: SnackPosition.TOP,
-  //     );
-  //   }
-  // }
-
-
-
 
   Future<void> _getUserData() async {
     DatabaseReference userRef = _database.child('users/$_userId');

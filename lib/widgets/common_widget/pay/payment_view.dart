@@ -595,22 +595,7 @@ class _PaymentViewState extends State<PaymentView> {
           }
         });
       });
-    return Dismissible(
-      key: Key(item['id'].toString()),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        color: Colors.redAccent,
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      onDismissed: (direction) {
-        // controllerHome.removeFromShoppingCart();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Item ${product['nameProduct']} removed')),
-        );
-      },
-      child: Container(
+    return Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -729,8 +714,7 @@ class _PaymentViewState extends State<PaymentView> {
             )),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _iconContainer(IconData icon) {
