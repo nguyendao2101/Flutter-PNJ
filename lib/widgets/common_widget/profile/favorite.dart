@@ -162,20 +162,6 @@ class _FavoriteState extends State<Favorite> {
               ),
             ),
           );
-          //   ListTile(
-          //   leading: product['productImg'] != null &&
-          //       product['productImg'].isNotEmpty
-          //       ? Image.network(
-          //     product['productImg'][0],
-          //     width: 50,
-          //     height: 50,
-          //     fit: BoxFit.cover,
-          //   )
-          //       : Icon(Icons.image_not_supported),
-          //   title: Text(product['nameProduct'] ?? 'Không có tên'),
-          //   subtitle: Text("ID: ${product['id']}"),
-          //   trailing: Icon(Icons.favorite, color: Colors.red),
-          // );
         },
       ),
     );

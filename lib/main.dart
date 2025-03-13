@@ -6,7 +6,7 @@ import 'package:flutter_pnj/view/splash_view.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 
-import 'model/service/consts.dart';
+import 'model/service/const.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

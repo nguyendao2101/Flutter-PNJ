@@ -1,38 +1,18 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'consts.dart';
+import 'const.dart';
 
 class StripeService {
   StripeService._();
   static final StripeService instance = StripeService._();
-
-  // Future<void> makePayment(double amountVND) async {
-  //   try {
-  //     // Chuyển đổi từ VND sang USD
-  //     double exchangeRate = 0.000041; // Tỷ giá VND/USD, nên cập nhật thường xuyên
-  //     int amountUSD = (amountVND * exchangeRate).round();
-  //
-  //     String? paymentIntentClientSecret = await _createPaymentIntent(amountUSD, "usd");
-  //     if (paymentIntentClientSecret == null) return;
-  //
-  //     await Stripe.instance.initPaymentSheet(
-  //       paymentSheetParameters: SetupPaymentSheetParameters(
-  //         paymentIntentClientSecret: paymentIntentClientSecret,
-  //         merchantDisplayName: "Nguyen Dao",
-  //       ),
-  //     );
-  //     await _processPayment();
-  //   } catch (e) {
-  //     print("Lỗi khi thanh toán: $e");
-  //   }
-  // }
   Future<String?> makePayment(double amountVND) async {
     try {
       double exchangeRate = 0.000041;
       int amountUSD = (amountVND * exchangeRate).round();
 
-      String? paymentIntentClientSecret = await _createPaymentIntent(amountUSD, "usd");
+      String? paymentIntentClientSecret =
+          await _createPaymentIntent(amountUSD, "usd");
       if (paymentIntentClientSecret == null) return null;
 
       await Stripe.instance.initPaymentSheet(
@@ -61,9 +41,7 @@ class StripeService {
         data: data,
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
-          headers: {
-            "Authorization": "Bearer $stripeSecretKey"
-          },
+          headers: {"Authorization": "Bearer $stripeSecretKey"},
         ),
       );
       if (response.data != null) {
