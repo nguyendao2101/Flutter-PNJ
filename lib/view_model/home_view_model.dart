@@ -199,7 +199,8 @@ class HomeViewModel extends GetxController {
   //   }
   // }
   // xoa san pham da mua
-  Future<void> removeAllFromPurchasedCart(List<Map<String, dynamic>> products) async {
+  Future<void> removeFromFavoriteCart(String productId) async {
+    print('product id dc xoa: $productId');
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -208,45 +209,42 @@ class HomeViewModel extends GetxController {
       }
 
       String userId = currentUser.uid;
+      DatabaseReference cartRef = _database.child('users/$userId/favouriteCart');
 
       // Lấy danh sách hiện tại từ Firebase
-      final snapshot = await _database.child('users/$userId/ShoppingCart').get();
+      final snapshot = await cartRef.get();
       List<dynamic> currentCart = [];
 
       if (snapshot.exists && snapshot.value is List) {
-        currentCart = List<dynamic>.from(snapshot.value as List);
+        currentCart = List<String>.from(snapshot.value as List);
       }
 
-      // Chuyển đổi các sản phẩm trong currentCart sang Map<String, dynamic> nếu cần thiết
-      List<Map<String, dynamic>> castedCart = currentCart.map((item) {
-        return Map<String, dynamic>.from(item as Map);
-      }).toList();
+      if (currentCart.contains(productId)) {
+        currentCart.remove(productId);
+        await cartRef.set(currentCart); // Lưu danh sách ID đã cập nhật lên Firebase
 
-      // Xóa từng sản phẩm khỏi danh sách dựa trên `id`
-      for (var product in products) {
-        castedCart.removeWhere((item) => item['id'] == product['id']);
+        shoppingCart.clear();
+        shoppingCart.addAll(currentCart.cast<String>() as Iterable<Map<String, dynamic>>); // Cập nhật giỏ hàng
+        update();
+
+        Get.snackbar(
+          "Success",
+          "Product removed from FavoriteCart!",
+          snackPosition: SnackPosition.TOP,
+        );
+      } else {
+        Get.snackbar(
+          "Info",
+          "Product not found in FavoriteCart.",
+          snackPosition: SnackPosition.TOP,
+        );
       }
-
-      // Ghi danh sách cập nhật lên Firebase
-      await _database.child('users/$userId/ShoppingCart').set(castedCart);
-
-      // Cập nhật UI
-      shoppingCart.clear();
-      shoppingCart.addAll(castedCart);
-      update();
-
-      // Get.snackbar(
-      //   "Success",
-      //   "Products removed from PurchasedCart!",
-      //   snackPosition: SnackPosition.TOP,
-      // );
     } catch (e) {
-      print('Lỗi khi xóa danh sách sản phẩm: $e');
-      // Get.snackbar(
-      //   "Error",
-      //   "Failed to remove products from PurchasedCart!",
-      //   snackPosition: SnackPosition.TOP,
-      // );
+      Get.snackbar(
+        "Success",
+        "Product removed from FavoriteCart!",
+        snackPosition: SnackPosition.TOP,
+      );
     }
   }
 
@@ -301,7 +299,8 @@ class HomeViewModel extends GetxController {
     }
   }
   // xoa khoi danh sach yeu thich
-  Future<void> removeFromoFavoriteCart(Map<String, dynamic> product) async {
+  Future<void> removeFromPurcharedCart(String productId) async {
+    print('product id dc xoa: $productId');
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -310,50 +309,45 @@ class HomeViewModel extends GetxController {
       }
 
       String userId = currentUser.uid;
+      DatabaseReference cartRef = _database.child('users/$userId/purchasedCart');
 
-      // Lấy danh sách ShoppingCart hiện tại từ Firebase
-      final snapshot = await _database.child('users/$userId/FavoriteCart').get();
+      // Lấy danh sách hiện tại từ Firebase
+      final snapshot = await cartRef.get();
       List<dynamic> currentCart = [];
 
       if (snapshot.exists && snapshot.value is List) {
-        currentCart = List<dynamic>.from(snapshot.value as List);
+        currentCart = List<String>.from(snapshot.value as List);
       }
 
-      // Kiểm tra xem sản phẩm có trong giỏ hàng không
-      bool isProductInCart = currentCart.any((item) => item['id'] == product['id']); // Kiểm tra dựa trên 'id' của sản phẩm
+      if (currentCart.contains(productId)) {
+        currentCart.remove(productId);
+        await cartRef.set(currentCart); // Lưu danh sách ID đã cập nhật lên Firebase
 
-      if (isProductInCart) {
-        // Xóa sản phẩm khỏi danh sách giỏ hàng
-        currentCart.removeWhere((item) => item['id'] == product['id']);
-
-        // Ghi danh sách cập nhật lên Firebase
-        await _database.child('users/$userId/FavoriteCart').set(currentCart);
-
-        // Cập nhật lại shoppingCart và thông báo thành công
         shoppingCart.clear();
-        shoppingCart.addAll(currentCart.cast<Map<String, dynamic>>()); // Cập nhật shoppingCart bằng cách cast lại dữ liệu
-        update(); // Cập nhật UI
+        shoppingCart.addAll(currentCart.cast<String>() as Iterable<Map<String, dynamic>>); // Cập nhật giỏ hàng
+        update();
 
         Get.snackbar(
           "Success",
-          "Product removed from FavoriteCart!",
+          "Product removed from PurchasedCart!",
           snackPosition: SnackPosition.TOP,
         );
       } else {
         Get.snackbar(
-          "Success",
-          "Product removed from FavoriteCart!",
+          "Info",
+          "Product not found in PurchasedCart.",
           snackPosition: SnackPosition.TOP,
         );
       }
     } catch (e) {
       Get.snackbar(
         "Success",
-        "Product removed from FavoriteCart!",
+        "Product removed from PurchasedCart!",
         snackPosition: SnackPosition.TOP,
       );
     }
   }
+
 
   // them
   Future<void> addToShoppingCart(Map<String, dynamic> product, int size) async {
@@ -477,6 +471,7 @@ class HomeViewModel extends GetxController {
       print("❌ Error: $e");
     }
   }
+
 
   Future<void> _getUserData() async {
     DatabaseReference userRef = _database.child('users/$_userId');

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pnj/view_model/by_cart_view_model.dart';
+import 'package:flutter_pnj/view_model/home_view_model.dart';
 import 'package:get/get.dart';
 
 import '../../../view_model/favorite_view_model.dart';
@@ -16,6 +18,7 @@ class Favorite extends StatefulWidget {
 
 class _FavoriteState extends State<Favorite> {
   final controller = Get.put(FavoriteViewModel());
+  final controllerHome = Get.put(HomeViewModel());
   final controllerGetData = Get.put(GetDataViewModel());
 
   List<Map<String, dynamic>> _filteredProducts = [];
@@ -72,7 +75,7 @@ class _FavoriteState extends State<Favorite> {
               child: const Icon(Icons.delete, color: Colors.white),
             ),
             onDismissed: (direction) {
-              // controllerHome.removeFromShoppingCart();
+              controllerHome.removeFromFavoriteCart(product['id']);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Item ${product['nameProduct']} removed')),
               );

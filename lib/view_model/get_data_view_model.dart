@@ -295,33 +295,54 @@ class GetDataViewModel extends GetxController {
   // }
 
   Future<void> addOrderToFirestore({
-    required String storeId,
-    required String userId,
-    required String? deliveryAddress,
-    required String placeOfPurchase,
-    required String? paymentMethod,
-    required double? total,
-    required List<Map<String, dynamic>> listProducts,
+    required String addressUserGet,
+    required double? couponDiscount,
+    required String? couponId,
+    required String emailUserGet,
+    // required String id,
+    required String idUserOrder,
+    required String nameUserGet,
+    required String paymentId,
+    required String phoneUserGet,
+    required List<Map<String, dynamic>> productItems,
+    required String status,
+    // required DateTime timeOrder,
+    required double totalAmount,
+    required String typePayment,
   }) async {
     try {
       // Lấy tham chiếu đến collection 'orders'
-      final ordersCollection = FirebaseFirestore.instance.collection('orders');
+      final ordersCollection = FirebaseFirestore.instance.collection('Orders');
 
       // Tạo orderId bằng timestamp
       final orderId = DateTime.now().millisecondsSinceEpoch.toString();
 
       // Dữ liệu đơn hàng với orderId
       final orderData = {
-        "storeId": storeId,
-        "userId": userId,
-        "purchaseDate": DateTime.now().toIso8601String(),
-        "deliveryAddress": deliveryAddress,
-        "placeOfPurchase": placeOfPurchase,
-        "paymentMethod": paymentMethod,
-        "status": 'Confirm',
-        "total": total,
-        "listProducts": listProducts,
-        "orderId": orderId, // Thêm orderId vào dữ liệu
+        "addressUserGet": addressUserGet,
+        "couponDiscount": couponDiscount,
+        "couponId": couponId,
+        "emailUserGet": emailUserGet,
+        "id": orderId,
+        "idUserOrder": idUserOrder,
+        "nameUserGet": nameUserGet,
+        "paymentId": paymentId,
+        "phoneUserGet": phoneUserGet,
+        "productItems": productItems,
+        "status": status,
+        "timeOrder": DateTime.now().toIso8601String(),
+        "totalAmount": totalAmount,
+        "typePayment ": typePayment,
+        // "storeId": storeId,
+        // "userId": userId,
+        // "purchaseDate": DateTime.now().toIso8601String(),
+        // "deliveryAddress": deliveryAddress,
+        // "placeOfPurchase": placeOfPurchase,
+        // "paymentMethod": paymentMethod,
+        // "status": 'Confirm',
+        // "total": total,
+        // "listProducts": listProducts,
+        // "orderId": orderId, // Thêm orderId vào dữ liệu
       };
 
       // Lưu dữ liệu với orderId là ID của tài liệu

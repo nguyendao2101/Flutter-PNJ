@@ -7,8 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
-
-
 import '../../../model/service/stripe_service.dart';
 import '../../../view_model/get_data_view_model.dart';
 import '../../../view_model/home_view_model.dart';
@@ -458,73 +456,63 @@ class _PaymentViewState extends State<PaymentView> {
                       if (responseCode == '00') {
                         await Future.delayed(Duration(seconds: 1));
                         showPaymentMethod(context, selectedPaymentMethod);
-                        await controllerGetData.addOrderToFirestore(
-                          storeId: selectedStore.value!['id'],
-                          userId: controller.userId.toString(),
-                          deliveryAddress: selectedLocationName,
-                          placeOfPurchase: selectedStore.value!['Name'],
-                          paymentMethod: selectedPaymentMethod.value?['name'],
-                          listProducts: [
-                            for (int i = 0; i < quantities.length; i++)
-                              {
-                                "nameProduct": nameProduct[i],
-                                "quantities": quantities[i],
-                                "imageURL": imageURL,
-                                "imageFace": imageFace
-                              },
-                          ],
-                          total: total,
-                        );
+                        // await controllerGetData.addOrderToFirestore(
+                        //   storeId: selectedStore.value!['id'],
+                        //   userId: controller.userId.toString(),
+                        //   deliveryAddress: selectedLocationName,
+                        //   placeOfPurchase: selectedStore.value!['Name'],
+                        //   paymentMethod: selectedPaymentMethod.value?['name'],
+                        //   listProducts: [
+                        //     for (int i = 0; i < quantities.length; i++)
+                        //       {
+                        //         "nameProduct": nameProduct[i],
+                        //         "quantities": quantities[i],
+                        //         "imageURL": imageURL,
+                        //         "imageFace": imageFace
+                        //       },
+                        //   ],
+                        //   total: total,
+                        // );
                         // controllerHome.addAllToPurchasedCart(widget.product);
                         // controllerHome.removeAllFromPurchasedCart(widget.product);
                       } else {
                         await Future.delayed(Duration(seconds: 1));
                         _showPaymentMethodFail(context, selectedPaymentMethod);
                         // controllerHome.addAllToPurchasedCart(widget.product);
-                        controllerHome.removeAllFromPurchasedCart(widget.product);
+                        // controllerHome.removeFromPurcharedCart(widget.product['id']);
                       }
                     } else if (selectedPaymentMethod.value?['id'] == '3') {
-                      // StripeService.instance.makePayment(total - coupon);
-                      // showPaymentMethod(context, selectedPaymentMethod);
                       handlePayment(total,coupon);
-                      await controllerGetData.addOrderToFirestore(
-                        storeId: selectedStore.value!['id'],
-                        userId: controller.userId.toString(),
-                        deliveryAddress: selectedLocationName,
-                        placeOfPurchase: selectedStore.value!['Name'],
-                        paymentMethod: selectedPaymentMethod.value?['name'],
-                        listProducts: [
-                          for (int i = 0; i < quantities.length; i++)
-                            {
-                              "nameProduct": nameProduct[i],
-                              "quantities": quantities[i],
-                              "imageURL": imageURL,
-                              "imageFace": imageFace
-                            },
-                        ],
-                        total: total,
-                      );
+                      // await controllerGetData.addOrderToFirestore(
+                      //     addressUserGet: addressUserGet,
+                      //     couponDiscount: couponDiscount,
+                      //     couponId: couponId, emailUserGet: emailUserGet,
+                      //     idUserOrder: controller.userId.toString(),
+                      //     nameUserGet: nameUserGet, paymentId: paymentId,
+                      //     phoneUserGet: phoneUserGet, productItems: productItems,
+                      //     status: 'process', totalAmount: (total - coupon),
+                      //     typePayment: selectedPaymentMethod.value!['name'].toString());
                       // controllerHome.addAllToPurchasedCart(widget.product);
-                      controllerHome.removeAllFromPurchasedCart(widget.product);
+                      // controllerHome.removeAllFromPurchasedCart(widget.product);
                     } else {
                       showPaymentMethod(context, selectedPaymentMethod);
-                      await controllerGetData.addOrderToFirestore(
-                        storeId: selectedStore.value!['id'],
-                        userId: controller.userId.toString(),
-                        deliveryAddress: selectedLocationName,
-                        placeOfPurchase: selectedStore.value!['Name'],
-                        paymentMethod: selectedPaymentMethod.value?['name'],
-                        listProducts: [
-                          for (int i = 0; i < quantities.length; i++)
-                            {
-                              "nameProduct": nameProduct[i],
-                              "quantities": quantities[i],
-                              "imageURL": imageURL,
-                              "imageFace": imageFace
-                            },
-                        ],
-                        total: total,
-                      );
+                      // await controllerGetData.addOrderToFirestore(
+                      //   storeId: selectedStore.value!['id'],
+                      //   userId: controller.userId.toString(),
+                      //   deliveryAddress: selectedLocationName,
+                      //   placeOfPurchase: selectedStore.value!['Name'],
+                      //   paymentMethod: selectedPaymentMethod.value?['name'],
+                      //   listProducts: [
+                      //     for (int i = 0; i < quantities.length; i++)
+                      //       {
+                      //         "nameProduct": nameProduct[i],
+                      //         "quantities": quantities[i],
+                      //         "imageURL": imageURL,
+                      //         "imageFace": imageFace
+                      //       },
+                      //   ],
+                      //   total: total,
+                      // );
                       // controllerHome.addAllToPurchasedCart(widget.product);
                       // controllerHome.removeAllFromPurchasedCart(widget.product);
                     }
