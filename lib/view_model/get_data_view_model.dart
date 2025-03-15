@@ -141,39 +141,45 @@ class GetDataViewModel extends GetxController {
 // Hàm lấy danh sách trạng thái đơn hàng
   Future<void> fetchOrderTracking() async {
     try {
-      // Lấy dữ liệu từ collection 'orders'
-      final QuerySnapshot snapshot = await _firestore.collection('orders').get();
+      final QuerySnapshot snapshot = await _firestore.collection('Orders').get();
 
-      // Chuyển đổi dữ liệu thành danh sách Map và xử lý theo đúng cấu trúc
+      if (snapshot.docs.isEmpty) {
+        print("No orders found in Firestore.");
+        orderTracking.assignAll([]); // Gán danh sách rỗng nếu không có đơn hàng
+        return;
+      }
+
       final fetchedOrders = snapshot.docs.map((doc) {
         final orderData = doc.data() as Map<String, dynamic>;
 
         return {
-          'orderId': doc.id, // Lưu orderId từ Firestore
-          'deliveryAddress': orderData['deliveryAddress'], // Địa chỉ giao hàng
-          'paymentMethod': orderData['paymentMethod'], // Phương thức thanh toán
-          'placeOfPurchase': orderData['placeOfPurchase'], // Nơi mua hàng
-          'purchaseDate': orderData['purchaseDate'], // Ngày mua
-          'status': orderData['status'], // Trạng thái đơn hàng
-          'storeId': orderData['storeId'], // Store ID
-          'total': orderData['total'], // Tổng giá trị đơn hàng
-          'userId': orderData['userId'], // User ID
-          'listProducts': orderData['listProducts'], // Danh sách sản phẩm
+          'orderId': doc.id, // Sử dụng Firestore document ID
+          'addressUserGet': orderData['addressUserGet'],
+          'couponDiscount': orderData['couponDiscount'],
+          'couponId': orderData['couponId'],
+          'emailUserGet': orderData['emailUserGet'],
+          'idUserOrder': orderData['idUserOrder'],
+          'nameUserGet': orderData['nameUserGet'],
+          'phoneUserGet': orderData['phoneUserGet'],
+          'productItems': orderData['productItems'],
+          'status': orderData['status'],
+          'timeOrder': orderData['timeOrder'],
+          'totalAmount': orderData['totalAmount'],
+          'typePayment': orderData['typePayment '],
         };
       }).toList();
 
-      // In ra dữ liệu đã lấy được
-      print('Order Tracking fetched:');
+      print("Fetched Order Tracking:");
       fetchedOrders.forEach((order) {
-        print('Order ID: ${order['orderId']}, Data: $order');
+        print("Order ID: ${order['orderId']}, User ID: ${order['idUserOrder']}, Status: ${order['status']}");
       });
 
-      // Gán dữ liệu vào biến orderTracking
       orderTracking.assignAll(fetchedOrders);
     } catch (e) {
-      print('Error fetching order tracking: $e');
+      print("Error fetching order tracking: $e");
     }
   }
+
 
 
   // Hàm lấy sản phẩm của cửa hàng cụ thể
@@ -262,37 +268,6 @@ class GetDataViewModel extends GetxController {
       print('Error fetching orders: $e');
     }
   }
-  // Future<void> addOrderToFirestore({
-  //   required String storeId,
-  //   required String? deliveryAddress,
-  //   required String placeOfPurchase,
-  //   required String? paymentMethod,
-  //   required double? total,
-  //   required List<Map<String, dynamic>> listProducts,
-  // }) async {
-  //   try {
-  //     // Dữ liệu đơn hàng
-  //     final orderData = {
-  //       "orderId": storeId,
-  //       "storeId": storeId,
-  //       "purchaseDate": DateTime.now().toIso8601String(), // Thời gian tự động
-  //       "deliveryAddress": deliveryAddress,
-  //       "placeOfPurchase": placeOfPurchase,
-  //       "paymentMethod": paymentMethod,
-  //       "total": total,
-  //       "listProducts": listProducts,
-  //     };
-  //
-  //     // Lưu dữ liệu và sử dụng phương thức add để Firestore tự tạo ID
-  //     final docRef = await FirebaseFirestore.instance.collection('orders').add(orderData);
-  //
-  //     // Lấy ID tài liệu được tạo ra
-  //     final orderId = docRef.id;
-  //     print('Order with ID $orderId added successfully!');
-  //   } catch (e) {
-  //     print('Error adding order: $e');
-  //   }
-  // }
 
   Future<void> addOrderToFirestore({
     required String addressUserGet,
@@ -326,23 +301,12 @@ class GetDataViewModel extends GetxController {
         "id": orderId,
         "idUserOrder": idUserOrder,
         "nameUserGet": nameUserGet,
-        // "paymentId": paymentId,
         "phoneUserGet": phoneUserGet,
         "productItems": productItems,
         "status": status,
-        "timeOrder": DateTime.now().toIso8601String(),
+        "timeOrder": Timestamp.now(),
         "totalAmount": totalAmount,
         "typePayment ": typePayment,
-        // "storeId": storeId,
-        // "userId": userId,
-        // "purchaseDate": DateTime.now().toIso8601String(),
-        // "deliveryAddress": deliveryAddress,
-        // "placeOfPurchase": placeOfPurchase,
-        // "paymentMethod": paymentMethod,
-        // "status": 'Confirm',
-        // "total": total,
-        // "listProducts": listProducts,
-        // "orderId": orderId, // Thêm orderId vào dữ liệu
       };
 
       // Lưu dữ liệu với orderId là ID của tài liệu
