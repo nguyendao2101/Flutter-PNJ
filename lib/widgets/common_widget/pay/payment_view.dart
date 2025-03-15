@@ -156,7 +156,7 @@ class _PaymentViewState extends State<PaymentView> {
       nameUserGet: controllerProfile.userData['fullName'],
       phoneUserGet: controllerProfile.userData['numberPhone'].toString(),
       productItems: productItems,
-      status: 'process',
+      status: 'pending',
       totalAmount: (total - coupon),
       typePayment: selectedPaymentMethod.value!['name'].toString(),
     );
@@ -836,7 +836,7 @@ class _PaymentViewState extends State<PaymentView> {
                         TextButton(
                           onPressed: () {
                             // Get.to(() => const OrderTracking(initialIndex: 0,));
-                            Get.to(()=> const OrderTracking());
+                            Get.to(()=> const OrderTracking(initialIndex: 0,));
                           },
                           child: const Text(
                             'Order Tracking',

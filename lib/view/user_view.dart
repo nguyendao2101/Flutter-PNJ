@@ -126,8 +126,7 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                               GestureDetector(
                                   onTap: () {
-                                    // Get.to(() =>  OrderTracking(initialIndex: 0,));
-                                    Get.to(()=> const OrderTracking());
+                                    Get.to(()=> const OrderTracking(initialIndex: 0,));
                                   },
                                   child: FunctionProfile(
                                     image: ImageAsset.GPS,
