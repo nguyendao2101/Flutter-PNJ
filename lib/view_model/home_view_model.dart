@@ -248,6 +248,52 @@ class HomeViewModel extends GetxController {
     }
   }
 
+  Future<void> removeMultipleFromFavoriteCart(List<String> productIds) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        throw Exception("No user is signed in.");
+      }
+
+      String userId = currentUser.uid;
+      DatabaseReference cartRef = _database.child('users/$userId/favouriteCart');
+
+      // Lấy danh sách hiện tại từ Firebase
+      final snapshot = await cartRef.get();
+      List<dynamic> currentCart = [];
+
+      if (snapshot.exists && snapshot.value is List) {
+        currentCart = List<String>.from(snapshot.value as List);
+      }
+
+      // Xóa từng sản phẩm nếu nó có trong danh sách
+      currentCart.removeWhere((id) => productIds.contains(id));
+
+      // Cập nhật danh sách mới lên Firebase
+      await cartRef.set(currentCart);
+
+      // Cập nhật giỏ hàng cục bộ
+      shoppingCart.clear();
+      shoppingCart.addAll(currentCart.cast<String>() as Iterable<Map<String, dynamic>>);
+
+      update();
+
+      Get.snackbar(
+        "Success",
+        "${productIds.length} products removed from FavoriteCart!",
+        snackPosition: SnackPosition.TOP,
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to remove products: $e",
+        snackPosition: SnackPosition.TOP,
+      );
+    }
+  }
+
+
 
   Future<void> addToFavoriteCart(Map<String, dynamic> product) async {
     try {
@@ -409,6 +455,49 @@ class HomeViewModel extends GetxController {
         "Failed to add product to ShoppingCart!",
         snackPosition: SnackPosition.TOP,
       );
+    }
+  }
+
+  // xoa nhung don hang sau khi da mua
+  Future<void> removeMultipleFromShoppingCart(List<Map<String, dynamic>> productsToRemove) async {
+    if (productsToRemove.isEmpty) {
+      Get.snackbar("Info", "No products selected for removal!", snackPosition: SnackPosition.TOP);
+      return;
+    }
+
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        throw Exception("No user is signed in.");
+      }
+
+      String userId = currentUser.uid;
+      DatabaseReference cartRef = _database.child('users/$userId/shoppingCart');
+
+      // 📌 Lấy danh sách hiện tại từ Firebase
+      final snapshot = await cartRef.get();
+      if (!snapshot.exists || snapshot.value == null) {
+        Get.snackbar("Info", "Shopping cart is empty!", snackPosition: SnackPosition.TOP);
+        return;
+      }
+
+      List<dynamic> currentCart = List.from(snapshot.value as List<dynamic>);
+
+      // 🔍 Lọc danh sách để chỉ giữ lại những sản phẩm KHÔNG bị xóa
+      List<Map<String, dynamic>> updatedCart = currentCart
+          .where((item) => !productsToRemove.any((p) =>
+      p['idProduct'] == item['idProduct'] && p['size'] == item['size']))
+          .map((item) => Map<String, dynamic>.from(item as Map))
+          .toList();
+
+      // 📌 Cập nhật danh sách mới lên Firebase (ID tự động sắp xếp lại)
+      await cartRef.set(updatedCart);
+
+      print("✅ Đã xóa sản phẩm và cập nhật danh sách mới!");
+      Get.snackbar("Success", "Selected products removed and cart updated!", snackPosition: SnackPosition.TOP);
+    } catch (e) {
+      Get.snackbar("Error", "Failed to remove products!", snackPosition: SnackPosition.TOP);
+      print("❌ Error: $e");
     }
   }
 

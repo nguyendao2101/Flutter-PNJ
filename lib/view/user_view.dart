@@ -6,6 +6,7 @@ import '../widgets/common_widget/profile/address.dart';
 import '../widgets/common_widget/profile/favorite.dart';
 import '../widgets/common_widget/profile/function_png.dart';
 import '../widgets/common_widget/profile/function_profile.dart';
+import '../widgets/common_widget/profile/order_tracking.dart';
 import '../widgets/common_widget/profile/personal_info.dart';
 import '../widgets/common_widget/profile/purchased.dart';
 import 'buy_cart_view.dart';
@@ -126,6 +127,7 @@ class _ProfileViewState extends State<ProfileView> {
                               GestureDetector(
                                   onTap: () {
                                     // Get.to(() =>  OrderTracking(initialIndex: 0,));
+                                    Get.to(()=> const OrderTracking());
                                   },
                                   child: FunctionProfile(
                                     image: ImageAsset.GPS,

@@ -10,8 +10,10 @@ import 'package:intl/intl.dart';
 import '../../../model/service/stripe_service.dart';
 import '../../../view_model/get_data_view_model.dart';
 import '../../../view_model/home_view_model.dart';
+import '../../../view_model/profile_view_model.dart';
 import '../../common/image_extention.dart';
 import '../button/bassic_button.dart';
+import '../profile/order_tracking.dart';
 class PaymentView extends StatefulWidget {
   List<Map<String, dynamic>> product;
   PaymentView({super.key, required this.product});
@@ -24,6 +26,8 @@ class _PaymentViewState extends State<PaymentView> {
   final controller = Get.put(ByCartViewModel());
   final controllerHome = Get.put(HomeViewModel());
   final controllerGetData = Get.put(GetDataViewModel());
+  final controllerProfile = Get.put(ProfileViewModel());
+
   TextEditingController couponController = TextEditingController();
   double coupon = 0;  // Khai báo coupon là biến trạng thái
   double delivery = 0;  // Khai báo coupon là biến trạng thái
@@ -36,8 +40,9 @@ class _PaymentViewState extends State<PaymentView> {
   String? _selectedStoreId;
   bool _isLoadingStores = false;
   String? selectedLocation; // Lưu địa chỉ được chọn
-  String? selectedLocationName ; // Lưu địa chỉ được chọn
+  String selectedLocationName = ''; // Lưu địa chỉ được chọn
   var selectedPaymentMethod = Rxn<Map<String, String>>();
+  List<String> selectedProducts = [];
 
   final List<Map<String, String>> paymentMethods = [
     {'id': '1', 'name': 'Cash on Delivery'},
@@ -51,6 +56,7 @@ class _PaymentViewState extends State<PaymentView> {
   List<String> nameProduct = []; // Sửa kiểu dữ liệu của nameProduct thành List<String>
   List<Map<String, dynamic>> products = [];
   bool isLoadingProducts = true;
+  String enteredCode = '';
   Future<Map<String, String>>? _locationsFuture;
 
 
@@ -60,18 +66,102 @@ class _PaymentViewState extends State<PaymentView> {
     _loadProducts();
     _locationsFuture = controller.listenToAddress();
     controller.fetchCoupons();
-    // controller.fetchStores();
-    //
-    // // Sửa việc chuyển đổi `Name` sang kiểu String
-    // quantities = widget.product.map<int>((item) => item['Quantity'] ?? 0).toList();
-    // nameProduct = widget.product.map<String>((item) => item['Name'] ?? '').toList(); // Sửa kiểu dữ liệu thành String
-    // imageURL = widget.product.isNotEmpty
-    //     ? (widget.product[0]['ImageUrl'] ?? '') // Lấy giá trị đầu tiên hoặc rỗng
-    //     : '';
-    // imageFace = widget.product.isNotEmpty
-    //     ? (widget.product[0]['ImageUrlFacebook'] ?? '') // Lấy giá trị đầu tiên hoặc rỗng
-    //     : '';
   }
+
+  // void removeMultipleFromFavoriteCart() {
+  //   List<String> productIds = controller.ordersList.map((item) {
+  //     final product = products.firstWhere(
+  //           (prod) => prod['id'] == item['idProduct'],
+  //       orElse: () => {'id': ''}, // Tránh lỗi nếu không tìm thấy sản phẩm
+  //     );
+  //
+  //     return product['id'].toString();
+  //   }).where((id) => id.isNotEmpty).toList(); // Loại bỏ ID rỗng
+  //
+  //   if (productIds.isNotEmpty) {
+  //     for (String productId in productIds) {
+  //       print('da chon: $productId');
+  //       controllerHome.removeFromFavoriteCart(productId); // Gọi hàm xóa từng sản phẩm
+  //     }
+  //   } else {
+  //     Get.snackbar("Lỗi", "Không có sản phẩm nào để xóa!");
+  //   }
+  // }
+  void removeMultipleShoppingCart() {
+    List<Map<String, dynamic>> selectedProducts = controller.ordersList.map((item) {
+      final product = products.firstWhere(
+            (prod) => prod['id'] == item['idProduct'],
+        orElse: () => {'id': ''}, // Tránh lỗi nếu không tìm thấy sản phẩm
+      );
+
+      return {
+        'id': product['id'].toString(),
+        'size': item['size'].toString(), // Lấy thêm size
+      };
+    }).where((item) => item['id']!.isNotEmpty).toList(); // Loại bỏ sản phẩm không hợp lệ
+
+    if (selectedProducts.isNotEmpty) {
+      for (var product in selectedProducts) {
+        print('Đã chọn de xoa: ID: ${product['id']}, Size: ${product['size']}');
+        controllerHome.removeFromShoppingCart(product['id'], product['size']); // Gọi hàm xóa
+      }
+    } else {
+      Get.snackbar("Lỗi", "Không có sản phẩm nào để xóa!");
+    }
+  }
+
+
+
+  void saveOrder() {
+    List<Map<dynamic, dynamic>> productItems = controller.ordersList.map((item) {
+      final product = products.firstWhere(
+            (prod) => prod['id'] == item['idProduct'],
+        orElse: () => {},
+      );
+
+      if (product == null) return {};
+
+      // Ép kiểu danh sách sizePrice thành List<Map<String, dynamic>>
+      var rawData = product['sizePrice'] as List<dynamic>? ?? [];
+      List<Map<String, dynamic>> sizePriceList = rawData.map((e) => Map<String, dynamic>.from(e)).toList();
+
+      // Lấy giá theo size
+      final matchedSizePrice = sizePriceList.firstWhere(
+            (sp) => sp['size'] == item['size'],
+        orElse: () => {},
+      );
+
+      int price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
+      int quantity = (item['Quantity'] ?? 1).toInt();
+
+      return {
+        'idProductNow': product['id'] as String,
+        'description': product['description'] as String,
+        'nameProduct': product['nameProduct'] as String,
+        'image': (product['productImg'] as List<dynamic>?)?.firstOrNull ?? '',
+        'size': item['size'] as int,
+        'price': price,
+        'quantity': quantity,
+        'totalPrice': price * quantity,
+      };
+    }).where((item) => item.isNotEmpty).toList(); // Lọc bỏ phần tử rỗng
+
+    // Gọi hàm thêm vào Firestore
+    controllerGetData.addOrderToFirestore(
+      addressUserGet: selectedLocationName,
+      couponDiscount: coupon,
+      couponId: enteredCode,
+      emailUserGet: controllerProfile.userData['email'],
+      idUserOrder: controller.userId.toString(),
+      nameUserGet: controllerProfile.userData['fullName'],
+      phoneUserGet: controllerProfile.userData['numberPhone'].toString(),
+      productItems: productItems,
+      status: 'process',
+      totalAmount: (total - coupon),
+      typePayment: selectedPaymentMethod.value!['name'].toString(),
+    );
+  }
+
   Future<void> _loadProducts() async {
     await controllerGetData.fetchProducts();
     setState(() {
@@ -227,7 +317,7 @@ class _PaymentViewState extends State<PaymentView> {
                     const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
-                        String enteredCode = couponController.text.trim(); // Lấy giá trị từ TextField
+                        enteredCode = couponController.text.trim(); // Lấy giá trị từ TextField
                         var matchingCoupon = controller.coupons.firstWhere(
                               (coupon) => coupon['id'] == enteredCode,
                           orElse: () => {}, // Trả về một map rỗng khi không tìm thấy
@@ -335,7 +425,7 @@ class _PaymentViewState extends State<PaymentView> {
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedLocation = newValue;
-                                    selectedLocationName = locations[selectedLocation];
+                                    selectedLocationName = locations[selectedLocation]!;
                                   });
 
                                   print('Địa chỉ được chọn: $selectedLocationName');
@@ -450,75 +540,23 @@ class _PaymentViewState extends State<PaymentView> {
                     print('Response Code before payment1: $responseCode');
 
                     if (selectedPaymentMethod.value?['id'] == '2') {
-                      // await onPayment(context,total);  // Đảm bảo gọi và chờ onPayment thực hiện xong
-                      print('Response Code after payment2: $responseCode');
 
-                      if (responseCode == '00') {
-                        await Future.delayed(Duration(seconds: 1));
-                        showPaymentMethod(context, selectedPaymentMethod);
-                        // await controllerGetData.addOrderToFirestore(
-                        //   storeId: selectedStore.value!['id'],
-                        //   userId: controller.userId.toString(),
-                        //   deliveryAddress: selectedLocationName,
-                        //   placeOfPurchase: selectedStore.value!['Name'],
-                        //   paymentMethod: selectedPaymentMethod.value?['name'],
-                        //   listProducts: [
-                        //     for (int i = 0; i < quantities.length; i++)
-                        //       {
-                        //         "nameProduct": nameProduct[i],
-                        //         "quantities": quantities[i],
-                        //         "imageURL": imageURL,
-                        //         "imageFace": imageFace
-                        //       },
-                        //   ],
-                        //   total: total,
-                        // );
-                        // controllerHome.addAllToPurchasedCart(widget.product);
-                        // controllerHome.removeAllFromPurchasedCart(widget.product);
-                      } else {
-                        await Future.delayed(Duration(seconds: 1));
-                        _showPaymentMethodFail(context, selectedPaymentMethod);
-                        // controllerHome.addAllToPurchasedCart(widget.product);
-                        // controllerHome.removeFromPurcharedCart(widget.product['id']);
-                      }
                     } else if (selectedPaymentMethod.value?['id'] == '3') {
                       handlePayment(total,coupon);
-                      // await controllerGetData.addOrderToFirestore(
-                      //     addressUserGet: addressUserGet,
-                      //     couponDiscount: couponDiscount,
-                      //     couponId: couponId, emailUserGet: emailUserGet,
-                      //     idUserOrder: controller.userId.toString(),
-                      //     nameUserGet: nameUserGet, paymentId: paymentId,
-                      //     phoneUserGet: phoneUserGet, productItems: productItems,
-                      //     status: 'process', totalAmount: (total - coupon),
-                      //     typePayment: selectedPaymentMethod.value!['name'].toString());
                       // controllerHome.addAllToPurchasedCart(widget.product);
                       // controllerHome.removeAllFromPurchasedCart(widget.product);
                     } else {
+                      saveOrder();
                       showPaymentMethod(context, selectedPaymentMethod);
-                      // await controllerGetData.addOrderToFirestore(
-                      //   storeId: selectedStore.value!['id'],
-                      //   userId: controller.userId.toString(),
-                      //   deliveryAddress: selectedLocationName,
-                      //   placeOfPurchase: selectedStore.value!['Name'],
-                      //   paymentMethod: selectedPaymentMethod.value?['name'],
-                      //   listProducts: [
-                      //     for (int i = 0; i < quantities.length; i++)
-                      //       {
-                      //         "nameProduct": nameProduct[i],
-                      //         "quantities": quantities[i],
-                      //         "imageURL": imageURL,
-                      //         "imageFace": imageFace
-                      //       },
-                      //   ],
-                      //   total: total,
-                      // );
-                      // controllerHome.addAllToPurchasedCart(widget.product);
-                      // controllerHome.removeAllFromPurchasedCart(widget.product);
-                    }
+                      List<Map<String, dynamic>> selectedProducts = widget.product.map((item) {
+                        return {
+                          'idProduct': item['idProduct'],
+                          'size': item['size'],
+                        };
+                      }).toList();
 
-                    // Debug sau khi xử lý
-                    print('Response Code after payment: $responseCode');
+                      controllerHome.removeMultipleFromShoppingCart(selectedProducts);
+                    }
                   },
                   title: 'Continue to payment',
                   sizeTitle: 16,
@@ -705,18 +743,6 @@ class _PaymentViewState extends State<PaymentView> {
       );
   }
 
-  Widget _iconContainer(IconData icon) {
-    return Container(
-      height: 30,
-      width: 30,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey.shade300,
-      ),
-      child: Icon(icon, color: Colors.black, size: 18),
-    );
-  }
-
   Widget _moneyToTal(String title, double number, Color colorTitle, NumberFormat currencyFormat){
     return Padding(
       padding:  const EdgeInsets.symmetric(horizontal: 12),
@@ -727,7 +753,7 @@ class _PaymentViewState extends State<PaymentView> {
             fontSize: 16,
             color: colorTitle,
             fontWeight: FontWeight.w400,
-            fontFamily: 'Poppins',
+            fontFamily: 'Inter',
           ),),
           Row(
             children: [
@@ -735,14 +761,14 @@ class _PaymentViewState extends State<PaymentView> {
                 fontSize: 16,
                 color: Color(0xffA02334),
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Poppins',
+                fontFamily: 'Inter',
               ),),
               const SizedBox( width: 8,),
-              const Text('VND', style: TextStyle(
+              const Text('đ', style: TextStyle(
                 fontSize: 16,
                 color: Color(0xff1C1B1F),
                 fontWeight: FontWeight.w400,
-                fontFamily: 'Poppins',
+                fontFamily: 'Inter',
               ),),
             ],
           ),
@@ -780,7 +806,7 @@ class _PaymentViewState extends State<PaymentView> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      fontFamily: 'Poppins',
+                      fontFamily: 'Inter',
                       color: Color(0xff32343E),
                     ),
                   ),
@@ -800,7 +826,7 @@ class _PaymentViewState extends State<PaymentView> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            fontFamily: 'Poppins',
+                            fontFamily: 'Inter',
                             color: Colors.black87,
                           ),
                           textAlign: TextAlign.center,
@@ -810,6 +836,7 @@ class _PaymentViewState extends State<PaymentView> {
                         TextButton(
                           onPressed: () {
                             // Get.to(() => const OrderTracking(initialIndex: 0,));
+                            Get.to(()=> const OrderTracking());
                           },
                           child: const Text(
                             'Order Tracking',
@@ -915,7 +942,7 @@ class _PaymentViewState extends State<PaymentView> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      fontFamily: 'Poppins',
+                      fontFamily: 'Inter',
                       color: Color(0xff32343E),
                     ),
                   ),
@@ -935,7 +962,7 @@ class _PaymentViewState extends State<PaymentView> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            fontFamily: 'Poppins',
+                            fontFamily: 'Inter',
                             color: Colors.black87,
                           ),
                           textAlign: TextAlign.center,
@@ -980,6 +1007,14 @@ class _PaymentViewState extends State<PaymentView> {
     if (paymentIntent != null) {
       try {
         await Stripe.instance.presentPaymentSheet();
+        saveOrder();
+        List<Map<String, dynamic>> selectedProducts = controller.ordersList.map((item) {
+          return {
+            'idProduct': item['idProduct'],
+            'size': item['size'],
+          };
+        }).toList();
+        controllerHome.removeMultipleFromShoppingCart(selectedProducts);
         showPaymentMethod(context,selectedPaymentMethod);
       } catch (e) {
         if (e is StripeException) {
