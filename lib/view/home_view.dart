@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pnj/view/search_view.dart';
 import 'package:flutter_pnj/view_model/get_data_view_model.dart';
 import 'package:flutter_pnj/view_model/home_view_model.dart';
 import 'package:flutter_pnj/widgets/common/image_extention.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../widgets/common_widget/button/bassic_button_inter.dart';
@@ -23,8 +23,7 @@ class _HomeViewState extends State<HomeView> {
   int _currentIndex = 0;
   final controller = Get.put(HomeViewModel());
   final controllerGetData = Get.put(GetDataViewModel());
-  // List<Map<String, dynamic>> _adminTitle = [];
-  // bool _isLoadingAdminTitle = true;
+ 
 
   List<Map<String, dynamic>> _advertisement = [];
   bool _isLoadingAdvertisement = true;
@@ -81,26 +80,34 @@ class _HomeViewState extends State<HomeView> {
             Image.asset(ImageAsset.loadLogoApp, height: 26),
             const SizedBox(width: 10),
             Expanded(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search...',
-                  hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 28),
-                  filled: true,
-                  fillColor: Colors.grey.withOpacity(0.2),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
+              child: GestureDetector(
+                onTap: (){
+                  Get.to(() => SearchView());
+                },
+                child: Container(
+                  height: 44,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30)
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search, color: Colors.grey, size: 28),
+                        const SizedBox(width: 12,),
+                        Text('Search...', style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black.withOpacity(0.3),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,),)
+                      ],
+                    ),
+                  ),
                 ),
-                style: const TextStyle(fontSize: 16),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: SvgPicture.asset(ImageAsset.filter, color: Colors.black,height: 24,),
-            ),
+            )
           ],
         ),
       ),
@@ -143,20 +150,20 @@ class _HomeViewState extends State<HomeView> {
                       return ClipRRect(
                         child: imageUrl.isNotEmpty
                             ? CachedNetworkImage(
-                              imageUrl: imageUrl,
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.fill,
-                              placeholder: (context, url) => const Center(child: SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
-                              errorWidget: (context, url, error) => Container(
-                                color: Colors.grey[300],
-                                height: 200,
-                                child: const Center(child: Icon(Icons.broken_image, size: 40)),
-                              ),
-                            )
+                          imageUrl: imageUrl,
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => const Center(child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2))), // Hiển thị khi đang tải ảnh
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey[300],
+                            height: 200,
+                            child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                          ),
+                        )
                             : Container(
                           color: Colors.grey[300],
                           height: 200,
