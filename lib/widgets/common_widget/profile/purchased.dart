@@ -54,7 +54,7 @@ class _PurchasedState extends State<Purchased> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarProfile(title: 'Favorite Products'),
+      appBar: const AppBarProfile(title: 'Purcharsed Products'),
       body: _isLoadingProducts
           ? Center(child: CircularProgressIndicator()) // Hiển thị loading
           : _filteredProducts.isEmpty

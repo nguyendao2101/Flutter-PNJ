@@ -14,6 +14,7 @@ import '../../../view_model/profile_view_model.dart';
 import '../../common/image_extention.dart';
 import '../button/bassic_button.dart';
 import '../profile/order_tracking.dart';
+
 class PaymentView extends StatefulWidget {
   List<Map<String, dynamic>> product;
   PaymentView({super.key, required this.product});
@@ -29,8 +30,8 @@ class _PaymentViewState extends State<PaymentView> {
   final controllerProfile = Get.put(ProfileViewModel());
 
   TextEditingController couponController = TextEditingController();
-  double coupon = 0;  // Khai báo coupon là biến trạng thái
-  double delivery = 0;  // Khai báo coupon là biến trạng thái
+  double coupon = 0; // Khai báo coupon là biến trạng thái
+  double delivery = 0; // Khai báo coupon là biến trạng thái
   int price = 0;
   List<Map<String, dynamic>> selectedPrices = [];
   double total = 0;
@@ -53,12 +54,12 @@ class _PaymentViewState extends State<PaymentView> {
   String imageURL = '';
   String imageFace = '';
   List<int> quantities = [];
-  List<String> nameProduct = []; // Sửa kiểu dữ liệu của nameProduct thành List<String>
+  List<String> nameProduct =
+      []; // Sửa kiểu dữ liệu của nameProduct thành List<String>
   List<Map<String, dynamic>> products = [];
   bool isLoadingProducts = true;
   String enteredCode = '';
   Future<Map<String, String>>? _locationsFuture;
-
 
   @override
   void initState() {
@@ -88,63 +89,71 @@ class _PaymentViewState extends State<PaymentView> {
   //   }
   // }
   void removeMultipleShoppingCart() {
-    List<Map<String, dynamic>> selectedProducts = controller.ordersList.map((item) {
-      final product = products.firstWhere(
+    List<Map<String, dynamic>> selectedProducts = controller.ordersList
+        .map((item) {
+          final product = products.firstWhere(
             (prod) => prod['id'] == item['idProduct'],
-        orElse: () => {'id': ''}, // Tránh lỗi nếu không tìm thấy sản phẩm
-      );
+            orElse: () => {'id': ''}, // Tránh lỗi nếu không tìm thấy sản phẩm
+          );
 
-      return {
-        'id': product['id'].toString(),
-        'size': item['size'].toString(), // Lấy thêm size
-      };
-    }).where((item) => item['id']!.isNotEmpty).toList(); // Loại bỏ sản phẩm không hợp lệ
+          return {
+            'id': product['id'].toString(),
+            'size': item['size'].toString(), // Lấy thêm size
+          };
+        })
+        .where((item) => item['id']!.isNotEmpty)
+        .toList(); // Loại bỏ sản phẩm không hợp lệ
 
     if (selectedProducts.isNotEmpty) {
       for (var product in selectedProducts) {
         print('Đã chọn de xoa: ID: ${product['id']}, Size: ${product['size']}');
-        controllerHome.removeFromShoppingCart(product['id'], product['size']); // Gọi hàm xóa
+        controllerHome.removeFromShoppingCart(
+            product['id'], product['size']); // Gọi hàm xóa
       }
     } else {
       Get.snackbar("Lỗi", "Không có sản phẩm nào để xóa!");
     }
   }
 
-
-
   void saveOrder() {
-    List<Map<dynamic, dynamic>> productItems = widget.product.map((item) {
-      final product = products.firstWhere(
+    List<Map<dynamic, dynamic>> productItems = widget.product
+        .map((item) {
+          final product = products.firstWhere(
             (prod) => prod['id'] == item['idProduct'],
-        orElse: () => {},
-      );
+            orElse: () => {},
+          );
 
-      if (product == null) return {};
+          if (product == null) return {};
 
-      // Ép kiểu danh sách sizePrice thành List<Map<String, dynamic>>
-      var rawData = product['sizePrice'] as List<dynamic>? ?? [];
-      List<Map<String, dynamic>> sizePriceList = rawData.map((e) => Map<String, dynamic>.from(e)).toList();
+          // Ép kiểu danh sách sizePrice thành List<Map<String, dynamic>>
+          var rawData = product['sizePrice'] as List<dynamic>? ?? [];
+          List<Map<String, dynamic>> sizePriceList =
+              rawData.map((e) => Map<String, dynamic>.from(e)).toList();
 
-      // Lấy giá theo size
-      final matchedSizePrice = sizePriceList.firstWhere(
+          // Lấy giá theo size
+          final matchedSizePrice = sizePriceList.firstWhere(
             (sp) => sp['size'] == item['size'],
-        orElse: () => {},
-      );
+            orElse: () => {},
+          );
 
-      int price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
-      int quantity = (item['Quantity'] ?? 1).toInt();
+          int price =
+              matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
+          int quantity = (item['Quantity'] ?? 1).toInt();
 
-      return {
-        'idProductNow': product['id'] as String,
-        'description': product['description'] as String,
-        'nameProduct': product['nameProduct'] as String,
-        'image': (product['productImg'] as List<dynamic>?)?.firstOrNull ?? '',
-        'size': item['size'] as int,
-        'price': price,
-        'quantity': quantity,
-        'totalPrice': price * quantity,
-      };
-    }).where((item) => item.isNotEmpty).toList(); // Lọc bỏ phần tử rỗng
+          return {
+            'idProductNow': product['id'] as String,
+            'description': product['description'] as String,
+            'nameProduct': product['nameProduct'] as String,
+            'image':
+                (product['productImg'] as List<dynamic>?)?.firstOrNull ?? '',
+            'size': item['size'] as int,
+            'price': price,
+            'quantity': quantity,
+            'totalPrice': price * quantity,
+          };
+        })
+        .where((item) => item.isNotEmpty)
+        .toList(); // Lọc bỏ phần tử rỗng
 
     // Gọi hàm thêm vào Firestore
     controllerGetData.addOrderToFirestore(
@@ -169,19 +178,22 @@ class _PaymentViewState extends State<PaymentView> {
       isLoadingProducts = false;
     });
   }
+
   double calculateTotalPrice() {
-    if (selectedPrices.isEmpty) return 0.0; // Tránh lỗi tính toán trên danh sách rỗng
+    if (selectedPrices.isEmpty)
+      return 0.0; // Tránh lỗi tính toán trên danh sách rỗng
 
     return selectedPrices.fold(0.0, (total, item) {
       return total + ((item['price'] ?? 0.0) * (item['quantity'] ?? 1));
     });
   }
+
   List<Map<String, dynamic>> _getSelectedPrices() {
     List<Map<String, dynamic>> tempList = [];
 
     for (var item in controller.ordersList) {
       final product = products.firstWhere(
-            (prod) => prod['id'] == item['idProduct'],
+        (prod) => prod['id'] == item['idProduct'],
         orElse: () => {}, // Nếu không tìm thấy, trả về object rỗng
       );
 
@@ -190,16 +202,18 @@ class _PaymentViewState extends State<PaymentView> {
         List<Map<String, dynamic>> sizePriceList = [];
         var rawData = product['sizePrice'] as List<dynamic>?;
         if (rawData != null) {
-          sizePriceList = rawData.map((e) => Map<String, dynamic>.from(e)).toList();
+          sizePriceList =
+              rawData.map((e) => Map<String, dynamic>.from(e)).toList();
         }
 
         // Tìm giá của sản phẩm theo size
         final matchedSizePrice = sizePriceList.firstWhere(
-              (sp) => sp['size'] == item['size'],
+          (sp) => sp['size'] == item['size'],
           orElse: () => {},
         );
 
-        double price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
+        double price =
+            matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
         int quantity = (item['Quantity'] ?? 1).toInt();
 
         // Thêm vào danh sách selectedPrices
@@ -216,8 +230,10 @@ class _PaymentViewState extends State<PaymentView> {
     double y;
     // double total1 = controller.calculateTotal(selectedPrices);  // Cập nhật tổng tiền với coupon
     // double total = controller.calculateTotal(widget.product) - coupon + delivery;  // Cập nhật tổng tiền với coupon
-    final selectedStore = Rx<Map<String, dynamic>?>(null); // Lưu cửa hàng được chọn
-    final selectedAddress = Rx<Map<String, dynamic>?>(null); // Lưu cửa hàng được chọn
+    final selectedStore =
+        Rx<Map<String, dynamic>?>(null); // Lưu cửa hàng được chọn
+    final selectedAddress =
+        Rx<Map<String, dynamic>?>(null); // Lưu cửa hàng được chọn
     final NumberFormat currencyFormat = NumberFormat("#,###", "vi_VN");
     return SafeArea(
       child: Scaffold(
@@ -271,20 +287,23 @@ class _PaymentViewState extends State<PaymentView> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final selectedProducts = widget.product; // Gọi hàm để lấy danh sách đã lọc
+                  final selectedProducts =
+                      widget.product; // Gọi hàm để lấy danh sách đã lọc
 
                   if (index < 0 || index >= selectedProducts.length) {
                     return const SizedBox();
                   }
 
-                  final selectedProduct = selectedProducts[index]['originalIndex']; // Lấy sản phẩm từ danh sách đã lọc
+                  final selectedProduct = selectedProducts[index]
+                      ['originalIndex']; // Lấy sản phẩm từ danh sách đã lọc
 
                   return _buildCartItem(selectedProduct, currencyFormat);
                 },
               ),
               const SizedBox(width: 10),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
                 child: Row(
                   children: [
                     Expanded(
@@ -301,10 +320,14 @@ class _PaymentViewState extends State<PaymentView> {
                           border: InputBorder.none, // Bỏ viền
                           filled: true,
                           fillColor: Colors.grey[200],
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), // Điều chỉnh padding để căn chỉnh nội dung
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical:
+                                  10), // Điều chỉnh padding để căn chỉnh nội dung
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide.none, // Bỏ viền khi không focus
+                            borderSide:
+                                BorderSide.none, // Bỏ viền khi không focus
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -312,36 +335,41 @@ class _PaymentViewState extends State<PaymentView> {
                           ),
                         ),
                       ),
-
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
-                        enteredCode = couponController.text.trim(); // Lấy giá trị từ TextField
+                        enteredCode = couponController.text
+                            .trim(); // Lấy giá trị từ TextField
                         var matchingCoupon = controller.coupons.firstWhere(
-                              (coupon) => coupon['id'] == enteredCode,
-                          orElse: () => {}, // Trả về một map rỗng khi không tìm thấy
+                          (coupon) => coupon['id'] == enteredCode,
+                          orElse: () =>
+                              {}, // Trả về một map rỗng khi không tìm thấy
                         );
 
                         if (matchingCoupon.isNotEmpty) {
                           // Nếu tìm thấy mã giảm giá
-                          print('Coupon found: ${matchingCoupon['discount']} VND');
+                          print(
+                              'Coupon found: ${matchingCoupon['discount']} VND');
                           setState(() {
-                            coupon = matchingCoupon['discount'].toDouble();  // Cập nhật coupon khi tìm thấy
+                            coupon = matchingCoupon['discount']
+                                .toDouble(); // Cập nhật coupon khi tìm thấy
                           });
                         } else {
                           // Nếu không tìm thấy mã giảm giá
                           print('Invalid coupon code');
                           setState(() {
-                            coupon = 0;  // Đặt lại coupon nếu không tìm thấy
+                            coupon = 0; // Đặt lại coupon nếu không tìm thấy
                           });
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: const Color(0xffFBFBFB),
-                        backgroundColor: const Color(0xff981622), // Màu chữ khi button được nhấn
+                        backgroundColor: const Color(
+                            0xff981622), // Màu chữ khi button được nhấn
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4), // Bo góc với bán kính 12
+                          borderRadius: BorderRadius.circular(
+                              4), // Bo góc với bán kính 12
                         ),
                       ),
                       child: const Text('Apply'),
@@ -349,11 +377,17 @@ class _PaymentViewState extends State<PaymentView> {
                   ],
                 ),
               ),
-              _moneyToTal('Total', total, const Color(0xff5B645F),currencyFormat),
-              _moneyToTal('Delivery fees', delivery, const Color(0xff5B645F),currencyFormat),
-              _moneyToTal('Promo', coupon, const Color(0xff5B645F),currencyFormat),
-              _moneyToTal('Total', (total - coupon + delivery), const Color(0xff5B645F),currencyFormat),
-              const SizedBox(height: 20,),
+              _moneyToTal(
+                  'Total', total, const Color(0xff5B645F), currencyFormat),
+              _moneyToTal('Delivery fees', delivery, const Color(0xff5B645F),
+                  currencyFormat),
+              _moneyToTal(
+                  'Promo', coupon, const Color(0xff5B645F), currencyFormat),
+              _moneyToTal('Total', (total - coupon + delivery),
+                  const Color(0xff5B645F), currencyFormat),
+              const SizedBox(
+                height: 20,
+              ),
               FutureBuilder<Map<String, String>>(
                 future: _locationsFuture,
                 builder: (context, snapshot) {
@@ -372,26 +406,28 @@ class _PaymentViewState extends State<PaymentView> {
                     // Tạo danh sách DropdownMenuItem từ dữ liệu
                     final dropdownItems = locations.entries
                         .map((entry) => DropdownMenuItem<String>(
-                      value: entry.key, // ID địa chỉ làm giá trị
-                      child: Text(
-                        entry.value, // Địa chỉ hiển thị
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ))
+                              value: entry.key, // ID địa chỉ làm giá trị
+                              child: Text(
+                                entry.value, // Địa chỉ hiển thị
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ))
                         .toList();
 
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           InputDecorator(
                             decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
                               labelText: 'Select Address',
                               labelStyle: const TextStyle(
                                 fontSize: 16,
@@ -401,11 +437,13 @@ class _PaymentViewState extends State<PaymentView> {
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.grey),
+                                borderSide:
+                                    const BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.blue),
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
                               ),
                             ),
                             child: DropdownButtonHideUnderline(
@@ -425,10 +463,12 @@ class _PaymentViewState extends State<PaymentView> {
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedLocation = newValue;
-                                    selectedLocationName = locations[selectedLocation]!;
+                                    selectedLocationName =
+                                        locations[selectedLocation]!;
                                   });
 
-                                  print('Địa chỉ được chọn: $selectedLocationName');
+                                  print(
+                                      'Địa chỉ được chọn: $selectedLocationName');
                                 },
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -436,7 +476,8 @@ class _PaymentViewState extends State<PaymentView> {
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'Poppins',
                                 ),
-                                icon: Image.asset(ImageAsset.downArrow, height: 18),
+                                icon: Image.asset(ImageAsset.downArrow,
+                                    height: 18),
                               ),
                             ),
                           )
@@ -450,20 +491,21 @@ class _PaymentViewState extends State<PaymentView> {
               ),
               Obx(() {
                 // Tạo danh sách các mục Dropdown
-                final List<DropdownMenuItem<Map<String, String>>> dropdownItems = paymentMethods
-                    .map((method) => DropdownMenuItem<Map<String, String>>(
-                  value: method,
-                  child: Text(
-                    method['name']!,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xff32343E),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ))
-                    .toList();
+                final List<DropdownMenuItem<Map<String, String>>>
+                    dropdownItems = paymentMethods
+                        .map((method) => DropdownMenuItem<Map<String, String>>(
+                              value: method,
+                              child: Text(
+                                method['name']!,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xff32343E),
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                            ))
+                        .toList();
 
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -472,8 +514,8 @@ class _PaymentViewState extends State<PaymentView> {
                     children: [
                       InputDecorator(
                         decoration: InputDecoration(
-                          contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           labelText: 'Select Payment Method',
                           labelStyle: const TextStyle(
                             fontSize: 16,
@@ -496,7 +538,8 @@ class _PaymentViewState extends State<PaymentView> {
                             items: dropdownItems,
                             onChanged: (method) {
                               selectedPaymentMethod.value = method;
-                              print('Selected payment method: ${method!['name']}');
+                              print(
+                                  'Selected payment method: ${method!['name']}');
                             },
                             hint: const Text(
                               'Select Payment Method',
@@ -516,12 +559,20 @@ class _PaymentViewState extends State<PaymentView> {
                             ),
                             dropdownColor: Colors.white,
                             icon: selectedPaymentMethod.value?['id'] == '1'
-                                ? Image.asset(ImageAsset.money) // Thanh toán khi nhận hàng
+                                ? Image.asset(ImageAsset
+                                    .money) // Thanh toán khi nhận hàng
                                 : selectedPaymentMethod.value?['id'] == '2'
-                                ? SvgPicture.asset(ImageAsset.vnpay, height: 48,) // Thanh toán VNPay
-                                : selectedPaymentMethod.value?['id'] == '3'
-                                ? Image.asset(ImageAsset.stripe, height: 48,) // Thanh toán Stripe
-                                : const Icon(Icons.payment, color: Colors.grey), // Mặc định
+                                    ? SvgPicture.asset(
+                                        ImageAsset.vnpay,
+                                        height: 48,
+                                      ) // Thanh toán VNPay
+                                    : selectedPaymentMethod.value?['id'] == '3'
+                                        ? Image.asset(
+                                            ImageAsset.stripe,
+                                            height: 48,
+                                          ) // Thanh toán Stripe
+                                        : const Icon(Icons.payment,
+                                            color: Colors.grey), // Mặc định
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
@@ -532,30 +583,34 @@ class _PaymentViewState extends State<PaymentView> {
                 );
               }),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: BasicAppButton(
                   onPressed: () async {
                     // Debug giá trị trước khi xử lý
-                    print('Selected Payment Method: ${selectedPaymentMethod.value}');
+                    print(
+                        'Selected Payment Method: ${selectedPaymentMethod.value}');
                     print('Response Code before payment1: $responseCode');
 
                     if (selectedPaymentMethod.value?['id'] == '2') {
-
                     } else if (selectedPaymentMethod.value?['id'] == '3') {
-                      handlePayment(total,coupon);
-                      // controllerHome.addAllToPurchasedCart(widget.product);
+                      handlePayment(total, coupon);
+                      controllerHome.addAllToPurchasedCart(widget.product);
                       // controllerHome.removeAllFromPurchasedCart(widget.product);
                     } else {
                       saveOrder();
                       showPaymentMethod(context, selectedPaymentMethod);
-                      List<Map<String, dynamic>> selectedProducts = widget.product.map((item) {
+                      List<Map<String, dynamic>> selectedProducts =
+                          widget.product.map((item) {
                         return {
                           'idProduct': item['idProduct'],
                           'size': item['size'],
                         };
                       }).toList();
 
-                      controllerHome.removeMultipleFromShoppingCart(selectedProducts);
+                      controllerHome
+                          .removeMultipleFromShoppingCart(selectedProducts);
+                      controllerHome.addAllToPurchasedCart(widget.product);
                     }
                   },
                   title: 'Continue to payment',
@@ -565,10 +620,10 @@ class _PaymentViewState extends State<PaymentView> {
                   colorButton: const Color(0xffFF7622),
                   fontW: FontWeight.w500,
                 ),
-
               ),
-              const SizedBox(height: 100,),
-
+              const SizedBox(
+                height: 100,
+              ),
             ],
           ),
         ),
@@ -580,7 +635,7 @@ class _PaymentViewState extends State<PaymentView> {
   Widget _buildCartItem(int index, NumberFormat currencyFormat) {
     final item = controller.ordersList[index];
     final product = products.firstWhere(
-          (prod) => prod['id'] == item['idProduct'],
+      (prod) => prod['id'] == item['idProduct'],
       orElse: () => {},
     );
 
@@ -591,194 +646,215 @@ class _PaymentViewState extends State<PaymentView> {
     }
 
     final matchedSizePrice = sizePriceList.firstWhere(
-          (sp) => sp['size'] == item['size'],
+      (sp) => sp['size'] == item['size'],
       orElse: () => {},
     );
     price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
     int quantity = (item['Quantity'] ?? 1).toInt();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          total = 0; // Đặt lại total để tránh cộng dồn
-          for (var order in widget.product) {
-            final prod = products.firstWhere(
-                  (p) => p['id'] == order['idProduct'],
-              orElse: () => {},
-            );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        total = 0; // Đặt lại total để tránh cộng dồn
+        for (var order in widget.product) {
+          final prod = products.firstWhere(
+            (p) => p['id'] == order['idProduct'],
+            orElse: () => {},
+          );
 
-            var sizes = prod['sizePrice'] as List<dynamic>?;
-            List<Map<String, dynamic>> sizeList = sizes != null
-                ? sizes.map((e) => Map<String, dynamic>.from(e)).toList()
-                : [];
+          var sizes = prod['sizePrice'] as List<dynamic>?;
+          List<Map<String, dynamic>> sizeList = sizes != null
+              ? sizes.map((e) => Map<String, dynamic>.from(e)).toList()
+              : [];
 
-            var matched = sizeList.firstWhere(
-                  (sp) => sp['size'] == order['size'],
-              orElse: () => {},
-            );
+          var matched = sizeList.firstWhere(
+            (sp) => sp['size'] == order['size'],
+            orElse: () => {},
+          );
 
-            int itemPrice = matched.isNotEmpty ? matched['price'] ?? 0 : 0;
-            int itemQuantity = (order['Quantity'] ?? 1).toInt();
-            total += itemPrice * itemQuantity;
-          }
-        });
+          int itemPrice = matched.isNotEmpty ? matched['price'] ?? 0 : 0;
+          int itemQuantity = (order['Quantity'] ?? 1).toInt();
+          total += itemPrice * itemQuantity;
+        }
       });
+    });
     return Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(flex: 3,child: Container(
-              height: 150,
-              decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(12),bottomLeft:  Radius.circular(12))
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child:
-                CachedNetworkImage(
-                  imageUrl: product['productImg']?.isNotEmpty == true ? product['productImg'].first : 'https://storage.googleapis.com/duan-4904c.appspot.com/flutter_pnj/Trang%20s%E1%BB%A9c/B%C3%B4ng%20tai/11/gbxmxmy004922-bong-tai-vang-18k-dinh-da-cz-pnj-02.png?GoogleAccessId=firebase-adminsdk-v1s7v%40duan-4904c.iam.gserviceaccount.com&Expires=1893430800&Signature=skId0uhYKxXlF16CKqXnBKGrw21ZI9onCODbveScBugPGiXRFSWXQXdq4AUIKUUbwNFl6h1MMi0fz39PdfGTbH98Oe6MzJLMqPqNDawu5MYAgFqgQPZEzdx7zd9%2FAFaD8CED6mulA1I7lUNZ8CLNHSTrCI%2FcNUf7dylYLjyMQMcdK1wjeTszuja4VXfzSEfak9eLHRgIi%2FZ7adaZayWF6uux2aO75ek2753rCB77Y9PrBCO6c30bu4Wzo6U%2B73AdvCsNmYBv1xu3fhtmUBS0v%2B8RYdSAcOtfzmgoDGzrUpvP%2BovkSnHCkKuQA6KT%2BP6YOblMiK7EIDAgrXnfz21JTw%3D%3D',
-                  height: 80,
-                  width: 110,
-                  placeholder: (context, url) => const SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: const CircularProgressIndicator(strokeWidth: 2)), // Hiển thị khi tải
-                  errorWidget: (context, url, error) => const Icon(Icons.error), // Hiển thị khi lỗi
-                  fit: BoxFit.cover, // Căn chỉnh hình ảnh
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: Container(
+                height: 150,
+                decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        bottomLeft: Radius.circular(12))),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: product['productImg']?.isNotEmpty == true
+                        ? product['productImg'].first
+                        : 'https://storage.googleapis.com/duan-4904c.appspot.com/flutter_pnj/Trang%20s%E1%BB%A9c/B%C3%B4ng%20tai/11/gbxmxmy004922-bong-tai-vang-18k-dinh-da-cz-pnj-02.png?GoogleAccessId=firebase-adminsdk-v1s7v%40duan-4904c.iam.gserviceaccount.com&Expires=1893430800&Signature=skId0uhYKxXlF16CKqXnBKGrw21ZI9onCODbveScBugPGiXRFSWXQXdq4AUIKUUbwNFl6h1MMi0fz39PdfGTbH98Oe6MzJLMqPqNDawu5MYAgFqgQPZEzdx7zd9%2FAFaD8CED6mulA1I7lUNZ8CLNHSTrCI%2FcNUf7dylYLjyMQMcdK1wjeTszuja4VXfzSEfak9eLHRgIi%2FZ7adaZayWF6uux2aO75ek2753rCB77Y9PrBCO6c30bu4Wzo6U%2B73AdvCsNmYBv1xu3fhtmUBS0v%2B8RYdSAcOtfzmgoDGzrUpvP%2BovkSnHCkKuQA6KT%2BP6YOblMiK7EIDAgrXnfz21JTw%3D%3D',
+                    height: 80,
+                    width: 110,
+                    placeholder: (context, url) => const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: const CircularProgressIndicator(
+                            strokeWidth: 2)), // Hiển thị khi tải
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error), // Hiển thị khi lỗi
+                    fit: BoxFit.cover, // Căn chỉnh hình ảnh
+                  ),
                 ),
-              ),
-            )),
-            Expanded(flex: 5,child: Container(
-              height: 150,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product['nameProduct'] ?? 'Không có tiêu đề',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xff32343E),
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Inter',
+              )),
+          Expanded(
+              flex: 5,
+              child: Container(
+                height: 150,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product['nameProduct'] ?? 'Không có tiêu đề',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff32343E),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Inter',
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${currencyFormat.format(price)} đ',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xffA02334),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Inter',
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Quantity: ${item['Quantity'] ?? 1}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Text(
-                          "Size: ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xffA02334),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '${item['size']}',
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${currencyFormat.format(price)} đ',
                             style: const TextStyle(
                               fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                              color: Color(0xffA02334),
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Inter',
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Quantity: ${item['Quantity'] ?? 1}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Text(
+                            "Size: ",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xffA02334),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${item['size']}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )),
-          ],
-        ),
-      );
-  }
-
-  Widget _moneyToTal(String title, double number, Color colorTitle, NumberFormat currencyFormat){
-    return Padding(
-      padding:  const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: TextStyle(
-            fontSize: 16,
-            color: colorTitle,
-            fontWeight: FontWeight.w400,
-            fontFamily: 'Inter',
-          ),),
-          Row(
-            children: [
-              Text(currencyFormat.format(number).toString(), style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xffA02334),
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
-              ),),
-              const SizedBox( width: 8,),
-              const Text('đ', style: TextStyle(
-                fontSize: 16,
-                color: Color(0xff1C1B1F),
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
-              ),),
-            ],
-          ),
-
+              )),
         ],
       ),
     );
   }
 
-  void showPaymentMethod(BuildContext context, Rxn<Map<String, String>> selectedPaymentMethod) {
+  Widget _moneyToTal(String title, double number, Color colorTitle,
+      NumberFormat currencyFormat) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              color: colorTitle,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'Inter',
+            ),
+          ),
+          Row(
+            children: [
+              Text(
+                currencyFormat.format(number).toString(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xffA02334),
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Inter',
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              const Text(
+                'đ',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xff1C1B1F),
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showPaymentMethod(
+      BuildContext context, Rxn<Map<String, String>> selectedPaymentMethod) {
     showModalBottomSheet(
       context: context,
       barrierColor: Colors.grey.withOpacity(0.8),
@@ -818,7 +894,10 @@ class _PaymentViewState extends State<PaymentView> {
                       children: [
                         // Add a check icon for visual confirmation
                         const SizedBox(height: 24),
-                        Image.asset(ImageAsset.check, height: 128,),
+                        Image.asset(
+                          ImageAsset.check,
+                          height: 128,
+                        ),
                         const SizedBox(height: 64),
 
                         const Text(
@@ -836,7 +915,9 @@ class _PaymentViewState extends State<PaymentView> {
                         TextButton(
                           onPressed: () {
                             // Get.to(() => const OrderTracking(initialIndex: 0,));
-                            Get.to(()=> const OrderTracking(initialIndex: 0,));
+                            Get.to(() => const OrderTracking(
+                                  initialIndex: 0,
+                                ));
                           },
                           child: const Text(
                             'Order Tracking',
@@ -848,7 +929,8 @@ class _PaymentViewState extends State<PaymentView> {
                           ),
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0xffE03137),
-                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 40),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -866,7 +948,9 @@ class _PaymentViewState extends State<PaymentView> {
       },
     );
   }
-  void _showPaymentMethodFail(BuildContext context, Rxn<Map<String, String>> selectedPaymentMethod) {
+
+  void _showPaymentMethodFail(
+      BuildContext context, Rxn<Map<String, String>> selectedPaymentMethod) {
     showModalBottomSheet(
       context: context,
       barrierColor: Colors.grey.withOpacity(0.8),
@@ -906,7 +990,10 @@ class _PaymentViewState extends State<PaymentView> {
                       children: [
                         // Add a check icon for visual confirmation
                         const SizedBox(height: 24),
-                        Image.asset(ImageAsset.remove, height: 128,),
+                        Image.asset(
+                          ImageAsset.remove,
+                          height: 128,
+                        ),
                         const SizedBox(height: 64),
 
                         const Text(
@@ -935,7 +1022,8 @@ class _PaymentViewState extends State<PaymentView> {
                           ),
                           style: TextButton.styleFrom(
                             backgroundColor: const Color(0xffE03137),
-                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 40),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -953,25 +1041,28 @@ class _PaymentViewState extends State<PaymentView> {
       },
     );
   }
+
   void handlePayment(double total, double coupon) async {
-    String? paymentIntent = await StripeService.instance.makePayment(total - coupon);
+    String? paymentIntent =
+        await StripeService.instance.makePayment(total - coupon);
 
     if (paymentIntent != null) {
       try {
         await Stripe.instance.presentPaymentSheet();
         saveOrder();
-        List<Map<String, dynamic>> selectedProducts = controller.ordersList.map((item) {
+        List<Map<String, dynamic>> selectedProducts =
+            controller.ordersList.map((item) {
           return {
             'idProduct': item['idProduct'],
             'size': item['size'],
           };
         }).toList();
         controllerHome.removeMultipleFromShoppingCart(selectedProducts);
-        showPaymentMethod(context,selectedPaymentMethod);
+        showPaymentMethod(context, selectedPaymentMethod);
       } catch (e) {
         if (e is StripeException) {
           print("Lỗi Stripe: ${e.error.localizedMessage}");
-          _showPaymentMethodFail(context,selectedPaymentMethod);
+          _showPaymentMethodFail(context, selectedPaymentMethod);
         } else {
           print("Lỗi không xác định: $e");
         }
@@ -979,10 +1070,7 @@ class _PaymentViewState extends State<PaymentView> {
       }
     } else {
       print("Không thể khởi tạo thanh toán!");
-      _showPaymentMethodFail(context,selectedPaymentMethod);
+      _showPaymentMethodFail(context, selectedPaymentMethod);
     }
   }
-
 }
-
-
