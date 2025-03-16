@@ -595,6 +595,14 @@ class _PaymentViewState extends State<PaymentView> {
                     if (selectedPaymentMethod.value?['id'] == '2') {
                     } else if (selectedPaymentMethod.value?['id'] == '3') {
                       handlePayment(total, coupon);
+                      List<Map<String, dynamic>> selectedProducts =
+                      widget.product.map((item) {
+                        return {
+                          'idProduct': item['idProduct'],
+                          'size': item['size'],
+                        };
+                      }).toList();
+                      controllerHome.removeMultipleFromShoppingCart(selectedProducts);
                       controllerHome.addAllToPurchasedCart(widget.product);
                       // controllerHome.removeAllFromPurchasedCart(widget.product);
                     } else {

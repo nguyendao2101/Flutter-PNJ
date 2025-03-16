@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pnj/widgets/common_widget/button/bassic_button.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../view_model/favorite_view_model.dart';
 import '../../../view_model/get_data_view_model.dart';
 import '../../../view_model/purchased_view_model.dart';
 import '../../app_bar/personal_apbar.dart';
+import '../evalua_product/evalua_product.dart';
 import '../product_card/product_detail.dart';
 
 class Purchased extends StatefulWidget {
@@ -53,6 +56,7 @@ class _PurchasedState extends State<Purchased> {
 
   @override
   Widget build(BuildContext context) {
+    final NumberFormat currencyFormat = NumberFormat("#,###", "vi_VN");
     return Scaffold(
       appBar: const AppBarProfile(title: 'Purcharsed Products'),
       body: _isLoadingProducts
@@ -144,7 +148,7 @@ class _PurchasedState extends State<Purchased> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '${product['sizePrice'][0]['price']} đ',
+                                  '${currencyFormat.format(product['sizePrice'][0]['price'])} đ',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Color(0xffA02334),
@@ -154,6 +158,13 @@ class _PurchasedState extends State<Purchased> {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 12,),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 80),
+                              child: BasicAppButton(onPressed: (){
+                                Get.to(() => EvaluaProduct(product: product,));
+                              }, title: 'Evaluate', sizeTitle: 16,height: 36,radius: 10,),
+                            )
                           ],
                         ),
                       ),
