@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class EvaluaProductViewModel extends GetxController{
+  List<Map<String, dynamic>> evaluations = <Map<String, dynamic>>[].obs;
+
 
   Future<void> addOrderToFirestore({
     required String content,
@@ -50,7 +52,7 @@ class EvaluaProductViewModel extends GetxController{
       await evaluationsCollection.orderBy('timeEvaluation', descending: true).get();
 
       // Chuyển đổi danh sách thành List<Map<String, dynamic>>
-      final List<Map<String, dynamic>> evaluations = querySnapshot.docs
+      evaluations = querySnapshot.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
 

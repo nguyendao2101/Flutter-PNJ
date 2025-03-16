@@ -8,6 +8,7 @@ import '../../../view_model/evalua_product_view_model.dart';
 import '../../../view_model/home_view_model.dart';
 import '../../app_bar/detai_product_app_bar.dart';
 import '../button/bassic_button_inter.dart';
+import '../evalua_product/comment_evalua.dart';
 
 class ProductDetail extends StatefulWidget {
   final Map<String, dynamic> productDetail;
@@ -26,6 +27,7 @@ class _ProductDetailState extends State<ProductDetail> {
   bool isShowingDescription = true;
   final controller = Get.put(HomeViewModel());
   final controllerEva = Get.put(EvaluaProductViewModel());
+  TextEditingController _commentUser = TextEditingController();
 
   @override
   void initState() {
@@ -408,93 +410,8 @@ class _ProductDetailState extends State<ProductDetail> {
 
             // Hiển thị nội dung tùy theo trạng thái
             isShowingDescription ? _buildProductDescription()
-                :
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: controllerEva.fetchEvaluationsFromFirestore(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return const Center(child: Text('Error loading evaluations'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No evaluations found'));
-                  } else {
-                    final evaluations = snapshot.data!;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: snapshot.data!
-                          .map(
-                            (eval) => Column(
-                          children: [
-                            const Divider(),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start, // Đảm bảo căn chỉnh các thành phần theo trục trên cùng
-                              children: [
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey.shade300,
-                                  ),
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      ImageAsset.users,
-                                      height: 40,
-                                      width: 40,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded( // Đặt nội dung văn bản trong `Expanded` để hỗ trợ xuống dòng
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ProductRatingDetail(rating: eval['star']*1.0,),
-                                      Text(
-                                        eval['nameUser'] ?? 'Unknown',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Color(0xff32343E),
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Inter',
-                                        ),
-                                        overflow: TextOverflow.clip, // Hiển thị toàn bộ nội dung
-                                        softWrap: true, // Cho phép xuống dòng
-                                      ),
-                                      const SizedBox(height: 5), // Thêm khoảng cách giữa các văn bản
-                                      Text(
-                                        eval['content'] ?? 'No comment',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Color(0xff32343E),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Inter',
-                                        ),
-                                        overflow: TextOverflow.clip, // Hiển thị toàn bộ nội dung
-                                        softWrap: true, // Cho phép xuống dòng
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Divider(),
-                          ],
-                        ),
-                      )
-                          .toList(),
-                    );
-                  }
-                },
-              ),
-            ),
-
-
-      const SizedBox(height: 100,)
+                : EvaluationScreen(product: widget.productDetail,),
+            const SizedBox(height: 100,)
           ],
         ),
       ),

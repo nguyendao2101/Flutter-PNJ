@@ -6,6 +6,7 @@ import 'package:flutter_pnj/widgets/common_widget/rating/product_rating_display.
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../view_model/evalua_product_view_model.dart';
 import '../../../view_model/home_view_model.dart';
 
 class ProductCardListView extends StatefulWidget {
@@ -18,9 +19,15 @@ class ProductCardListView extends StatefulWidget {
 }
 
 class _ProductCardListViewState extends State<ProductCardListView> {
+  final controller = Get.put(HomeViewModel());
+  // final controllerEva = Get.put(EvaluaProductViewModel());
+  List<double> getStarsFromController(EvaluaProductViewModel controllerEva) {
+    return controllerEva.evaluations.map((eval) => eval['star'] as double).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeViewModel());
+
     final NumberFormat currencyFormat = NumberFormat("#,###", "vi_VN");
     return GestureDetector(
       onTap: () {
