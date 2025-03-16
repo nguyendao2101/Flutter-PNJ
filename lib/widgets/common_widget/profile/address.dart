@@ -3,8 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pnj/view_model/by_cart_view_model.dart';
 import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
-import '../../../view_model/profile_view_model.dart';
 import '../../app_bar/personal_apbar.dart';
 import '../button/bassic_button.dart';
 
@@ -22,11 +23,15 @@ class _AddressesState extends State<Addresses> {
   Future<Map<String, String>>? _locationsFuture;
   late Map<String, String> addresses = {};
 
+  // Biến lưu vị trí hiện tại
+  String? _currentLocationAddress;
+  Position? _currentPosition;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _locationsFuture = controller.listenToAddress();
+    _getCurrentLocation(); // Lấy vị trí hiện tại khi khởi tạo
   }
 
   @override
@@ -49,10 +54,53 @@ class _AddressesState extends State<Addresses> {
             addresses = snapshot.data!;
             return ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              itemCount: addresses.length,
+              itemCount: addresses.length + 1, // Thêm 1 cho địa chỉ hiện tại
               itemBuilder: (context, index) {
-                String key = addresses.keys.elementAt(index);
+                if (index == 0) {
+                  // Vị trí hiện tại
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    elevation: 3,
+                    child: ListTile(
+                      leading:
+                          const Icon(Icons.my_location, color: Colors.green),
+                      title: const Text(
+                        "Location:",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff000000),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      subtitle: Text(
+                        _currentLocationAddress ?? 'Đang lấy địa chỉ...',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff000000),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.refresh,
+                            color: Colors.blue), //nút bấm
+                        onPressed: () {
+                          _getCurrentLocation(); // Cập nhật lại vị trí khi nhấn nút
+                        },
+                      ),
+                    ),
+                  );
+                }
+
+                // Các địa chỉ lấy từ Firebase
+                String key = addresses.keys.elementAt(
+                    index - 1); // Trừ 1 vì index 0 là địa chỉ hiện tại
                 String address = addresses[key]!;
+
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   shape: RoundedRectangleBorder(
@@ -60,26 +108,29 @@ class _AddressesState extends State<Addresses> {
                   ),
                   elevation: 3,
                   child: ListTile(
-                    leading: Icon(Icons.location_on, color: Colors.blue),
-                    title: Text("Địa chỉ $key", style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xff000000),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Poppins',
-                    ),),
-                    subtitle: Text(address, style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xff000000),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Poppins',
-                    ),),
+                    leading: const Icon(Icons.location_on, color: Colors.blue),
+                    title: Text(
+                      "Địa chỉ $key",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xff000000),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    subtitle: Text(
+                      address,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xff000000),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        deleteAddressFromFirebase(key); // Gọi hàm xóa
-                        setState(() {
-                          addresses.remove(key);
-                        });
+                        deleteAddressFromFirebase(key);
                       },
                     ),
                   ),
@@ -93,8 +144,8 @@ class _AddressesState extends State<Addresses> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddAddressModal(context),
-        backgroundColor: Color(0xffEF5350),
-        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: const Color(0xffEF5350),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -197,8 +248,7 @@ class _AddressesState extends State<Addresses> {
                         cityController,
                         countryController,
                       );
-                      setState(() {
-                      }); // Cập nhật lại Future để FutureBuilder chạy lại
+                      setState(() {});
                       FocusScope.of(context).unfocus();
                     },
                     title: 'Add',
@@ -235,11 +285,16 @@ class _AddressesState extends State<Addresses> {
       String city = cityController.text.trim();
       String country = countryController.text.trim();
 
-      if (nameAddress.isEmpty || street.isEmpty || city.isEmpty || country.isEmpty) {
+      if (nameAddress.isEmpty ||
+          street.isEmpty ||
+          city.isEmpty ||
+          country.isEmpty) {
         throw Exception("All fields are required.");
       }
 
-      await FirebaseDatabase.instance.ref('users/$userId/addAddress/$nameAddress').set({
+      await FirebaseDatabase.instance
+          .ref('users/$userId/addAddress/$nameAddress')
+          .set({
         'street': street,
         'city': city,
         'country': country,
@@ -255,10 +310,11 @@ class _AddressesState extends State<Addresses> {
       cityController.clear();
       countryController.clear();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to add address: $e")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Failed to add address: $e")));
     }
   }
+
   Future<void> deleteAddressFromFirebase(String addressKey) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -269,7 +325,9 @@ class _AddressesState extends State<Addresses> {
 
       String userId = currentUser.uid;
 
-      await FirebaseDatabase.instance.ref('users/$userId/addAddress/$addressKey').remove();
+      await FirebaseDatabase.instance
+          .ref('users/$userId/addAddress/$addressKey')
+          .remove();
       setState(() {
         addresses.remove(addressKey);
       });
@@ -279,4 +337,126 @@ class _AddressesState extends State<Addresses> {
     }
   }
 
+  Future<void> _getCurrentLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        print('❌ GPS chưa bật!');
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('❌ Quyền vị trí bị từ chối!');
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        print('❌ Quyền vị trí bị từ chối vĩnh viễn!');
+        return;
+      }
+
+      // Lấy vị trí hiện tại
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        _currentPosition = position;
+      });
+
+      // Lấy địa chỉ từ tọa độ
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        String fullAddress =
+            '${place.street}, ${place.subLocality}, ${place.administrativeArea}, ${place.country}';
+        //số nhà - tên phường - tên quận - tên tỉnh - quốc gia
+        TextEditingController nameAddressController =
+            TextEditingController(text: "hiện tại");
+
+        TextEditingController streetController = TextEditingController(
+            text: place.street?.isNotEmpty == true ? place.street! : 'k');
+
+        TextEditingController cityController = TextEditingController(
+            text: place.subLocality?.isNotEmpty == true ? place.subLocality! : 'k');
+
+        TextEditingController countryController = TextEditingController(
+            text: place.administrativeArea?.isNotEmpty == true ? place.administrativeArea! : 'k');
+        await uploadAddressWithoutPop(
+          nameAddressController,
+          streetController,
+          cityController,
+          countryController,
+        );
+        setState(() {
+          _currentLocationAddress = fullAddress;
+        });
+      }
+    } catch (e) {
+      print('❌ Lỗi lấy vị trí: $e');
+    }
+  }
+
+  Future<void> uploadAddressWithoutPop(
+    TextEditingController nameAddressController,
+    TextEditingController streetController,
+    TextEditingController cityController,
+    TextEditingController countryController) async {
+  try {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      throw Exception("No user is signed in.");
+    }
+
+    String userId = currentUser.uid;
+    String nameAddress = nameAddressController.text.trim();
+    String street = streetController.text.trim();
+    String city = cityController.text.trim();
+    String country = countryController.text.trim();
+
+    if (nameAddress.isEmpty ||
+        street.isEmpty ||
+        city.isEmpty ||
+        country.isEmpty) {
+      throw Exception("All fields are required.");
+    }
+
+    await FirebaseDatabase.instance
+        .ref('users/$userId/addAddress/$nameAddress')
+        .set({
+      'street': street,
+      'city': city,
+      'country': country,
+    });
+
+    // Cập nhật map addresses local
+    addresses[nameAddress] = "$street, $city, $country";
+
+    setState(() {});
+
+    // Thông báo thành công
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Address added successfully!")),
+    );
+
+    // Xóa nội dung các controller sau khi thêm (giữ nguyên BottomSheet)
+    nameAddressController.clear();
+    streetController.clear();
+    cityController.clear();
+    countryController.clear();
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Failed to add address: $e")),
+    );
+  }
+}
 }
