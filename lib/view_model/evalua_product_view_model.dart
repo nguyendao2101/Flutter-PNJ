@@ -40,6 +40,27 @@ class EvaluaProductViewModel extends GetxController{
       print('Error adding order: $e');
     }
   }
+  Future<List<Map<String, dynamic>>> fetchEvaluationsFromFirestore() async {
+    try {
+      final evaluationsCollection =
+      FirebaseFirestore.instance.collection('Evaluations');
+
+      // Lấy dữ liệu từ Firestore, sắp xếp theo `timeEvaluation` giảm dần
+      final querySnapshot =
+      await evaluationsCollection.orderBy('timeEvaluation', descending: true).get();
+
+      // Chuyển đổi danh sách thành List<Map<String, dynamic>>
+      final List<Map<String, dynamic>> evaluations = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
+      return evaluations;
+    } catch (e) {
+      print('Error fetching evaluations: $e');
+      return [];
+    }
+  }
+
 
   Future<double> getAverageEvaluationByProduct(String productId) async {
     try {
