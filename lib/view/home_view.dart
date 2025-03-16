@@ -50,15 +50,6 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  // Future<void> _loadAdminTitle() async {
-  //   await controllerGetData.fetchAdminTitle();
-  //   setState(() {
-  //     _adminTitle = controllerGetData.adminTitle;
-  //     _isLoadingAdminTitle = false;
-  //   });
-  // }
-
-
   Future<void> _loadAdvertisement() async {
     await controllerGetData.fetchAdvertisement();
     setState(() {
@@ -66,23 +57,6 @@ class _HomeViewState extends State<HomeView> {
       _isLoadingAdvertisement = false;
     });
   }
-
-
-
-  // // Hàm lấy tất cả URL ảnh từ adminTitle
-  // List<String> getAllImageUrls() {
-  //   List<String> imageUrls = [];
-  //
-  //   for (var adminTitle in _adminTitle) {
-  //     imageUrls.addAll((adminTitle['advertisement'] ?? {})
-  //         .values
-  //         .where((value) => value is String && value.toString().startsWith('http'))
-  //         .cast<String>());
-  //   }
-  //
-  //   return imageUrls;
-  // }
-
   @override
   Widget build(BuildContext context) {
 
@@ -413,16 +387,16 @@ class _HomeViewState extends State<HomeView> {
             //   ),
             // ),
             // _cardProduct('Nhẫn cặp'),
-            // GestureDetector(
-            //   onTap: (){
-            //     Get.to(()=> TypeProduct(typeProduct: 'Kiềng', productDetail: _products,));
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 16),
-            //     child: _titleSeeMore('Kiềng'),
-            //   ),
-            // ),
-            // _cardProduct('Kiềng'),
+            GestureDetector(
+              onTap: (){
+                Get.to(()=> TypeProduct(typeProduct: 'Kiềng', productDetail: _products,));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _titleSeeMore('Kiềng'),
+              ),
+            ),
+            _cardProduct('Kiềng'),
             const SizedBox(height: 40),
             const FooterView(),
           ],

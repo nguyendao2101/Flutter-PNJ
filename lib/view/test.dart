@@ -1,70 +1,109 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import '../../../view_model/by_cart_view_model.dart';
-// import '../../../view_model/get_data_view_model.dart';
 //
-// class Pending extends StatefulWidget {
-//   const Pending({super.key});
+// import '../../../view_model/get_data_view_model.dart';
+// import '../../app_bar/list_product_app_bar.dart';
+// import '../product_card/product_card_grid_view.dart';
+// import '../product_card/product_card_list_view.dart';
+//
+// class CollectionProduct extends StatefulWidget {
+//   final String idCollection;
+//   const CollectionProduct({super.key, required this.idCollection,});
 //
 //   @override
-//   State<Pending> createState() => _PendingState();
+//   State<CollectionProduct> createState() => _CollectionProductState();
 // }
 //
-// class _PendingState extends State<Pending> {
-//   final getDataViewModel = Get.put(GetDataViewModel());
-//   final ordersViewModel = Get.put(ByCartViewModel());
+// class _CollectionProductState extends State<CollectionProduct> {
+//   final controllerGetData = Get.put(GetDataViewModel());
+//   List<Map<String, dynamic>> _products = [];
+//   bool _isLoadingProducts = true;
+//
+//   List<Map<String, dynamic>> _collectionproducts = [];
+//   bool _isLoadingCollectionProducts = true;
+//
+//   List<Map<String, dynamic>> _filteredProducts = [];
 //
 //   @override
 //   void initState() {
 //     super.initState();
-//     _loadOrderTracking();
+//     _loadProducts();
+//     _loadCollectionProducts();
 //   }
 //
-//   Future<void> _loadOrderTracking() async {
-//     try {
-//       await getDataViewModel.fetchOrderTracking();
+//   Future<void> _loadProducts() async {
+//     await controllerGetData.fetchProducts();
+//     setState(() {
+//       _products = controllerGetData.products;
+//       _isLoadingProducts = false;
+//       _filterProducts(); // Lọc sản phẩm ngay khi có dữ liệu
+//     });
+//   }
 //
-//       // Kiểm tra dữ liệu nhận được từ API
-//       print("Fetched orderTracking: ${getDataViewModel.orderTracking}");
+//   Future<void> _loadCollectionProducts() async {
+//     await controllerGetData.fetchCollectionProduct();
+//     setState(() {
+//       _collectionproducts = controllerGetData.collection;
+//       _isLoadingCollectionProducts = false;
+//       _filterProducts(); // Lọc sản phẩm khi có dữ liệu collection
+//     });
+//   }
 //
-//     } catch (e) {
-//       print("Error loading data: $e");
-//       Get.snackbar(
-//         "Error",
-//         "Failed to load data. Please try again later.",
-//         snackPosition: SnackPosition.BOTTOM,
-//       );
+//   void _filterProducts() {
+//     if (_products.isEmpty || _collectionproducts.isEmpty) return;
+//
+//     // Tìm collection phù hợp với idCollection
+//     var selectedCollection = _collectionproducts.firstWhere(
+//           (collection) => collection['id'] == widget.idCollection,
+//       orElse: () => {},
+//     );
+//
+//     if (selectedCollection.isNotEmpty && selectedCollection['listProduct'] != null) {
+//       List<String> listProductIds = List<String>.from(selectedCollection['listProduct']);
+//
+//       setState(() {
+//         _filteredProducts = _products.where((product) {
+//           return listProductIds.contains(product['id']);
+//         }).toList();
+//       });
 //     }
 //   }
 //
+//   String getCollectionName() {
+//     if (_collectionproducts.isEmpty) return "Không tìm thấy BST";
+//
+//     var selectedCollection = _collectionproducts.firstWhere(
+//           (collection) => collection['id'] == widget.idCollection,
+//       orElse: () => {},
+//     );
+//
+//     return selectedCollection.isNotEmpty ? selectedCollection['name'] : "Không tìm thấy BST";
+//   }
+//
+//
 //   @override
 //   Widget build(BuildContext context) {
-//     return Obx(() {
-//       if (getDataViewModel.orderTracking.isEmpty) {
-//         return const Center(child: Text("Your pending Cart is empty."));
-//       }
-//
-//       var pendingOrders = getDataViewModel.orderTracking.where((item) {
-//         print("Comparing UserID: ${item['idUserOrder']} == ${ordersViewModel.userId}");
-//         print("Comparing Status: ${item['status']} == 'pending'");
-//
-//         return item['idUserOrder'].toString() == ordersViewModel.userId.toString() &&
-//             item['status'].toString() == 'pending';
-//       }).toList();
-//
-//       return pendingOrders.isEmpty
-//           ? const Center(child: Text("No pending orders found."))
-//           : ListView.builder(
-//         itemCount: pendingOrders.length,
+//     return Scaffold(
+//       appBar: ListProductAppBar(context: context, title: getCollectionName(),),
+//       body: _isLoadingProducts || _isLoadingCollectionProducts
+//           ? const Center(child: CircularProgressIndicator())
+//           : _filteredProducts.isEmpty
+//           ? const Center(child: Text("Không có sản phẩm nào"))
+//           : GridView.builder(
+//         padding: const EdgeInsets.all(8),
+//         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//           crossAxisCount: 2,
+//           crossAxisSpacing: 8.0,
+//           mainAxisSpacing: 16.0,
+//           childAspectRatio: 0.54,
+//         ),
+//         itemCount: _filteredProducts.length,
 //         itemBuilder: (context, index) {
-//           var item = pendingOrders[index];
-//           return ListTile(
-//             title: Text("Order ID: ${item['orderId']}"),
-//             subtitle: Text("Status: ${item['status']}"),
-//           );
+//           final product = _filteredProducts[index];
+//           return ProductCardGridView(product: product);
 //         },
-//       );
-//     });
-//
+//       ),
+//     );
 //   }
 // }
+//
