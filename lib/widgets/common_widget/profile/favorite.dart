@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../view_model/favorite_view_model.dart';
 import '../../../view_model/get_data_view_model.dart';
 import '../../app_bar/personal_apbar.dart';
+import '../pay/payment_view.dart';
 import '../product_card/product_detail.dart';
 
 class Favorite extends StatefulWidget {
@@ -18,6 +19,7 @@ class Favorite extends StatefulWidget {
 
 class _FavoriteState extends State<Favorite> {
   final controller = Get.put(FavoriteViewModel());
+  final controllerByCart = Get.put(ByCartViewModel());
   final controllerHome = Get.put(HomeViewModel());
   final controllerGetData = Get.put(GetDataViewModel());
 
@@ -101,7 +103,7 @@ class _FavoriteState extends State<Favorite> {
                 child: Row(
                   children: [
                     Expanded(flex: 3,child: Container(
-                      height: 150,
+                      height: 180,
                       decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(12),bottomLeft:  Radius.circular(12))
@@ -123,7 +125,7 @@ class _FavoriteState extends State<Favorite> {
                       ),
                     )),
                     Expanded(flex: 5,child: Container(
-                      height: 150,
+                      height: 180,
                       color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -142,21 +144,22 @@ class _FavoriteState extends State<Favorite> {
                               maxLines: 2,
                             ),
                             const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${product['sizePrice'][0]['price']} đ',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xffA02334),
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
+                        ),
+                      ),
+                    )),
+                    Expanded(flex: 1,child: Container(
+                      height: 180,
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(12),bottomRight:  Radius.circular(12))
+                      ),
+                      child:  Obx(
+                            () => Checkbox(
+                          value: controllerByCart.selectedItems.contains(index),
+                          onChanged: (bool? value) => controllerByCart.toggleItemSelection(index),
+                          activeColor: const Color(0xff981622),
+                          checkColor: Colors.white,
                         ),
                       ),
                     )),
@@ -167,6 +170,33 @@ class _FavoriteState extends State<Favorite> {
           );
         },
       ),
+      floatingActionButton: Obx(() {
+        if (controllerByCart.selectedItems.isEmpty) {
+          return const SizedBox
+              .shrink(); // Ẩn nút nếu không có sản phẩm nào được chọn
+        }
+        return FloatingActionButton.extended(
+          onPressed: () {
+            Get.to(() => PaymentView(
+              product: controllerByCart.checkoutSelectedItems(),
+            ));
+          },
+          label: const Text(
+            'Buy',
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xffFFFFFF),
+              fontWeight: FontWeight.w500,
+              fontFamily: 'Inter',
+            ),
+          ),
+          backgroundColor: const Color(0xff981622),
+          icon: const Icon(
+            Icons.shopping_cart_checkout,
+            color: Colors.white,
+          ),
+        );
+      }),
     );
   }
 }
