@@ -15,7 +15,8 @@ class ByCartViewModel extends GetxController {
   final RxList<Map<String, dynamic>> coupons = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> ordersList = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> addressList = <Map<String, dynamic>>[].obs;
-  final RxList<int> selectedItems = <int>[].obs; // Danh sách index của các sản phẩm được chọn
+  final RxList<int> selectedItems =
+      <int>[].obs; // Danh sách index của các sản phẩm được chọn
   final RxList<Map<String, dynamic>> stores = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> products = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> favorite = <Map<String, dynamic>>[].obs;
@@ -40,12 +41,12 @@ class ByCartViewModel extends GetxController {
   Future<void> fetchProducts() async {
     try {
       final QuerySnapshot snapshot =
-      await _firestore.collection('Products').get();
+          await _firestore.collection('Products').get();
       final fetchedProducts = snapshot.docs
           .map((doc) => {
-        'id': doc.id, // Lưu productId
-        ...doc.data() as Map<String, dynamic>,
-      })
+                'id': doc.id, // Lưu productId
+                ...doc.data() as Map<String, dynamic>,
+              })
           .toList();
       products.assignAll(fetchedProducts); // Cập nhật danh sách sản phẩm
     } catch (e) {
@@ -57,12 +58,12 @@ class ByCartViewModel extends GetxController {
   Future<void> fetchStores() async {
     try {
       final QuerySnapshot snapshot =
-      await _firestore.collection('stores').get();
+          await _firestore.collection('stores').get();
       final fetchedStores = snapshot.docs
           .map((doc) => {
-        'id': doc.id, // Lưu storeId
-        ...doc.data() as Map<String, dynamic>,
-      })
+                'id': doc.id, // Lưu storeId
+                ...doc.data() as Map<String, dynamic>,
+              })
           .toList();
 
       // In ra các cửa hàng đã lấy được
@@ -78,12 +79,12 @@ class ByCartViewModel extends GetxController {
     }
   }
 
-
   // hàm lấy danh sách coupon
   Future<void> fetchCoupons() async {
     try {
       print('Fetching coupons...');
-      final QuerySnapshot snapshot = await _firestore.collection('Coupons').get();
+      final QuerySnapshot snapshot =
+          await _firestore.collection('Coupons').get();
       print('Raw snapshot data: ${snapshot.docs}');
 
       final fetchedCoupons = snapshot.docs.map((doc) {
@@ -102,16 +103,16 @@ class ByCartViewModel extends GetxController {
     }
   }
 
-
   void _initializeUserId() {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       userId.value = currentUser.uid;
     }
   }
+
   Future<Map<String, String>> listenToAddress() async {
     DatabaseReference addressRef =
-    FirebaseDatabase.instance.ref('users/${userId.value}/addAddress');
+        FirebaseDatabase.instance.ref('users/${userId.value}/addAddress');
 
     try {
       DatabaseEvent event = await addressRef.once();
@@ -131,7 +132,8 @@ class ByCartViewModel extends GetxController {
         for (int i = 0; i < rawData.length; i++) {
           var item = rawData[i];
           if (item is Map) {
-            String address = "${item['street'] ?? 'N/A'}, ${item['city'] ?? 'N/A'}, ${item['country'] ?? 'N/A'}";
+            String address =
+                "${item['street'] ?? 'N/A'}, ${item['city'] ?? 'N/A'}, ${item['country'] ?? 'N/A'}";
             addressMap[i.toString()] = address;
           }
         }
@@ -139,7 +141,8 @@ class ByCartViewModel extends GetxController {
         // Trường hợp dữ liệu là Map
         rawData.forEach((key, value) {
           if (value is Map) {
-            String address = "${value['street'] ?? 'N/A'}, ${value['city'] ?? 'N/A'}, ${value['country'] ?? 'N/A'}";
+            String address =
+                "${value['street'] ?? 'N/A'}, ${value['city'] ?? 'N/A'}, ${value['country'] ?? 'N/A'}";
             addressMap[key] = address;
           }
         });
@@ -155,7 +158,7 @@ class ByCartViewModel extends GetxController {
 
   Future<void> listenToOrders() async {
     DatabaseReference officialRidersRef =
-    _databaseReference.child('users/${userId.value}/shoppingCart');
+        _databaseReference.child('users/${userId.value}/shoppingCart');
 
     officialRidersRef.once().then((DatabaseEvent event) {
       DataSnapshot snapshot = event.snapshot;
@@ -195,7 +198,6 @@ class ByCartViewModel extends GetxController {
       }
     });
   }
-
 
 // lấy thông tin order
 //   Future<void> listenToOrders() async {
@@ -237,14 +239,12 @@ class ByCartViewModel extends GetxController {
 //     });
 //   }
 
-
-
-
   //xoa thong tin gio hang
   void deleteOrder({required String itemId}) async {
     if (userId.isEmpty) return;
 
-    final shoppingCartRef = _databaseReference.child('users/${userId.value}/ShoppingCart');
+    final shoppingCartRef =
+        _databaseReference.child('users/${userId.value}/ShoppingCart');
 
     try {
       final snapshot = await shoppingCartRef.get();
@@ -271,7 +271,8 @@ class ByCartViewModel extends GetxController {
             // Chuyển chuỗi JSON thành Map
             Map<String, dynamic> cartItemMap = jsonDecode(cartItem);
 
-            print('Checking item: ${cartItemMap['id']} against itemId: $itemId');
+            print(
+                'Checking item: ${cartItemMap['id']} against itemId: $itemId');
 
             // So sánh với itemId sau khi loại bỏ dấu cách
             if (cartItemMap['id'].toString().trim() == itemId.trim()) {
@@ -295,9 +296,6 @@ class ByCartViewModel extends GetxController {
     }
   }
 
-
-
-
   //
   Future<Map<String, String>> fetchLocationsFromFirebase() async {
     try {
@@ -307,11 +305,13 @@ class ByCartViewModel extends GetxController {
       }
 
       String userId = currentUser.uid;
-      DataSnapshot snapshot = await _databaseReference.child('users/$userId/AddAdress').get();
+      DataSnapshot snapshot =
+          await _databaseReference.child('users/$userId/AddAdress').get();
 
       if (snapshot.exists && snapshot.value is Map<dynamic, dynamic>) {
         Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
-        return data.map((key, value) => MapEntry(key.toString(), value.toString()));
+        return data
+            .map((key, value) => MapEntry(key.toString(), value.toString()));
       } else {
         debugPrint("No valid data found for locations.");
       }
@@ -320,7 +320,6 @@ class ByCartViewModel extends GetxController {
     }
     return {}; // Trả về Map rỗng khi không có dữ liệu
   }
-
 
   void selectItem(int index) {
     selectedItems.add(index); // Thêm sản phẩm vào danh sách đã chọn
@@ -359,9 +358,11 @@ class ByCartViewModel extends GetxController {
       int originalIndex = selectedItems[i];
 
       if (originalIndex >= 0 && originalIndex < ordersList.length) {
-        print('Selected product at index: $originalIndex -> ${ordersList[originalIndex]}');
+        print(
+            'Selected product at index: $originalIndex -> ${ordersList[originalIndex]}');
 
-        final product = Map<String, dynamic>.from(ordersList[originalIndex]); // Tạo bản sao sản phẩm
+        final product = Map<String, dynamic>.from(
+            ordersList[originalIndex]); // Tạo bản sao sản phẩm
         product['Quantity'] = ordersList[originalIndex]['Quantity'] ?? 1;
         product['originalIndex'] = originalIndex; // Lưu lại index gốc
 
@@ -373,15 +374,29 @@ class ByCartViewModel extends GetxController {
     return selectedProducts;
   }
 
+  bool isSelectedProductsOverStock(
+      List<Map<String, dynamic>> selectedProducts) {
+    for (var item in selectedProducts) {
+      final int quantity = item['Quantity'] ?? 1;
+      final int stock = item['stock'] ?? 0;
 
+      if (quantity > stock) {
+        print(
+            '⚠️ Sản phẩm ${item['id']} vượt tồn kho! Quantity: $quantity, Stock: $stock');
+        return true;
+      }
+    }
+
+    print('✅ Tất cả sản phẩm trong kho đủ hàng.');
+    return false;
+  }
 
   double calculateTotal(List<Map<String, dynamic>> product) {
     double total = 0.0;
     for (var item in product) {
       // total += item['Price']*item['Quantity']; // Cộng dồn giá của mỗi sản phẩm
-        total += item['price']*item['quantity'];
+      total += item['price'] * item['quantity'];
     }
     return total;
   }
-
 }

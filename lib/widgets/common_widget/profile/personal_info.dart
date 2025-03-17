@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pnj/view/change_passs.dart';
 import 'package:get/get.dart';
 
 import '../../../view_model/profile_view_model.dart';
@@ -13,7 +14,7 @@ class PersonalInfo extends StatelessWidget {
     final controller = Get.put(ProfileViewModel());
 
     return Scaffold(
-      appBar: const AppBarProfile(title: 'Persional Info'),
+      appBar: const AppBarProfile(title: 'Personal Info'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -74,6 +75,89 @@ class PersonalInfo extends StatelessWidget {
                 ),
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            // Các nút chức năng
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Get.toNamed('/edit-profile');
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        size: 18,
+                        color: Color(0xff111A2C), // icon màu đen
+                      ),
+                      label: const Text(
+                        'Sửa thông tin',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          color: Color(0xff111A2C), // chữ màu đen
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white, // nền trắng
+                        elevation: 0, // không bóng
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: const BorderSide(
+                            color: Color(0xff111A2C), // viền đen
+                            width: 1,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => const ChangePasswordSheet(),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.lock,
+                        size: 18,
+                        color: Color(0xff111A2C), // icon màu đen
+                      ),
+                      label: const Text(
+                        'Đổi mật khẩu',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          color: Color(0xff111A2C), // chữ màu đen
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white, // nền trắng
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: const BorderSide(
+                            color: Color(0xff111A2C), // viền đen
+                            width: 1,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -85,8 +169,9 @@ class PersonalInfo extends StatelessWidget {
     String? value,
     required IconData icon,
   }) {
-    // Kiểm tra nếu độ dài của value lớn hơn 20 ký tự, thì cắt và thêm dấu "..."
-    String displayedValue = (value != null && value.length > 12) ? value.substring(0, 12) + '...' : (value ?? 'N/A');
+    String displayedValue = (value != null && value.length > 12)
+        ? value.substring(0, 12) + '...'
+        : (value ?? 'N/A');
 
     return ListTile(
       leading: Icon(
@@ -113,7 +198,6 @@ class PersonalInfo extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildUserEmailTile({
     required String title,
