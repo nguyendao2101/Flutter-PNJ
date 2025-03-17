@@ -84,9 +84,28 @@ class _BuyCartViewState extends State<BuyCartView> {
         }
         return FloatingActionButton.extended(
           onPressed: () {
+            final selectedProducts = controller.checkoutSelectedItems();
+
+            // Bước 2: Kiểm tra có vượt tồn kho không
+            final hasOverStock =
+                controller.isSelectedProductsOverStock(selectedProducts);
+
+            // Bước 3: Nếu vượt kho, thông báo lỗi và return
+            if (hasOverStock) {
+              Get.snackbar(
+                'Lỗi',
+                'Có sản phẩm vượt quá số lượng tồn kho!',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.redAccent,
+                colorText: Colors.white,
+              );
+              return;
+            }
+
+            // Bước 4: Nếu hợp lệ, chuyển qua trang thanh toán
             Get.to(() => PaymentView(
-              product: controller.checkoutSelectedItems(),
-            ));
+                  product: selectedProducts,
+                ));
           },
           label: const Text(
             'Buy',
@@ -111,7 +130,7 @@ class _BuyCartViewState extends State<BuyCartView> {
   Widget _buildCartItem(int index, NumberFormat currencyFormat) {
     final item = controller.ordersList[index];
     final product = _products.firstWhere(
-          (prod) => prod['id'] == item['idProduct'],
+      (prod) => prod['id'] == item['idProduct'],
       orElse: () => {},
     );
 
@@ -122,10 +141,11 @@ class _BuyCartViewState extends State<BuyCartView> {
     }
 
     final matchedSizePrice = sizePriceList.firstWhere(
-          (sp) => sp['size'] == item['size'],
+      (sp) => sp['size'] == item['size'],
       orElse: () => {},
     );
-    int price = matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
+    int price =
+        matchedSizePrice.isNotEmpty ? matchedSizePrice['price'] ?? 0 : 0;
 
     return Dismissible(
       key: Key(item['id'].toString()),
@@ -144,7 +164,7 @@ class _BuyCartViewState extends State<BuyCartView> {
         );
       },
       child: GestureDetector(
-        onTap: (){
+        onTap: () {
           Get.to(() => ProductDetail(productDetail: product));
         },
         child: Container(
@@ -163,137 +183,153 @@ class _BuyCartViewState extends State<BuyCartView> {
           ),
           child: Row(
             children: [
-              Expanded(flex: 3,child: Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(12),bottomLeft:  Radius.circular(12))
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child:
-                  CachedNetworkImage(
-                    imageUrl: product['productImg']?.isNotEmpty == true ? product['productImg'].first : 'https://storage.googleapis.com/duan-4904c.appspot.com/flutter_pnj/Trang%20s%E1%BB%A9c/B%C3%B4ng%20tai/11/gbxmxmy004922-bong-tai-vang-18k-dinh-da-cz-pnj-02.png?GoogleAccessId=firebase-adminsdk-v1s7v%40duan-4904c.iam.gserviceaccount.com&Expires=1893430800&Signature=skId0uhYKxXlF16CKqXnBKGrw21ZI9onCODbveScBugPGiXRFSWXQXdq4AUIKUUbwNFl6h1MMi0fz39PdfGTbH98Oe6MzJLMqPqNDawu5MYAgFqgQPZEzdx7zd9%2FAFaD8CED6mulA1I7lUNZ8CLNHSTrCI%2FcNUf7dylYLjyMQMcdK1wjeTszuja4VXfzSEfak9eLHRgIi%2FZ7adaZayWF6uux2aO75ek2753rCB77Y9PrBCO6c30bu4Wzo6U%2B73AdvCsNmYBv1xu3fhtmUBS0v%2B8RYdSAcOtfzmgoDGzrUpvP%2BovkSnHCkKuQA6KT%2BP6YOblMiK7EIDAgrXnfz21JTw%3D%3D',
-                    height: 80,
-                    width: 110,
-                    placeholder: (context, url) => const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: const CircularProgressIndicator(strokeWidth: 2)), // Hiển thị khi tải
-                    errorWidget: (context, url, error) => const Icon(Icons.error), // Hiển thị khi lỗi
-                    fit: BoxFit.cover, // Căn chỉnh hình ảnh
-                  ),
-                ),
-              )),
-              Expanded(flex: 5,child: Container(
-                height: 180,
-                color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product['nameProduct'] ?? 'Không có tiêu đề',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xff32343E),
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Inter',
+              Expanded(
+                  flex: 3,
+                  child: Container(
+                    height: 180,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            bottomLeft: Radius.circular(12))),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl: product['productImg']?.isNotEmpty == true
+                            ? product['productImg'].first
+                            : 'https://storage.googleapis.com/duan-4904c.appspot.com/flutter_pnj/Trang%20s%E1%BB%A9c/B%C3%B4ng%20tai/11/gbxmxmy004922-bong-tai-vang-18k-dinh-da-cz-pnj-02.png?GoogleAccessId=firebase-adminsdk-v1s7v%40duan-4904c.iam.gserviceaccount.com&Expires=1893430800&Signature=skId0uhYKxXlF16CKqXnBKGrw21ZI9onCODbveScBugPGiXRFSWXQXdq4AUIKUUbwNFl6h1MMi0fz39PdfGTbH98Oe6MzJLMqPqNDawu5MYAgFqgQPZEzdx7zd9%2FAFaD8CED6mulA1I7lUNZ8CLNHSTrCI%2FcNUf7dylYLjyMQMcdK1wjeTszuja4VXfzSEfak9eLHRgIi%2FZ7adaZayWF6uux2aO75ek2753rCB77Y9PrBCO6c30bu4Wzo6U%2B73AdvCsNmYBv1xu3fhtmUBS0v%2B8RYdSAcOtfzmgoDGzrUpvP%2BovkSnHCkKuQA6KT%2BP6YOblMiK7EIDAgrXnfz21JTw%3D%3D',
+                        height: 80,
+                        width: 110,
+                        placeholder: (context, url) => const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: const CircularProgressIndicator(
+                                strokeWidth: 2)), // Hiển thị khi tải
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error), // Hiển thị khi lỗi
+                        fit: BoxFit.cover, // Căn chỉnh hình ảnh
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${currencyFormat.format(price)} đ',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xffA02334),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Inter',
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => controller.decreaseQuantity(index),
-                              icon: _iconContainer(Icons.remove),
+                  )),
+              Expanded(
+                  flex: 5,
+                  child: Container(
+                    height: 180,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product['nameProduct'] ?? 'Không có tiêu đề',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0xff32343E),
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Inter',
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                '${item['Quantity'] ?? 1}',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${currencyFormat.format(price)} đ',
                                 style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                                  fontSize: 14,
+                                  color: Color(0xffA02334),
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Inter',
                                 ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () => controller.increaseQuantity(index),
-                              icon: _iconContainer(Icons.add),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () =>
+                                        controller.decreaseQuantity(index),
+                                    icon: _iconContainer(Icons.remove),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Text(
+                                      '${item['Quantity'] ?? 1}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        controller.increaseQuantity(index),
+                                    icon: _iconContainer(Icons.add),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Text(
+                                "Size: ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffA02334),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  '${item['size']}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Text(
-                          "Size: ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xffA02334),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '${item['size']}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
+                  )),
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                    height: 180,
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(12),
+                            bottomRight: Radius.circular(12))),
+                    child: Obx(
+                      () => Checkbox(
+                        value: controller.selectedItems.contains(index),
+                        onChanged: (bool? value) =>
+                            controller.toggleItemSelection(index),
+                        activeColor: const Color(0xff981622),
+                        checkColor: Colors.white,
+                      ),
                     ),
-                  ],
-                ),
-              ),
-              )),
-              Expanded(flex: 1,child: Container(
-                height: 180,
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(12),bottomRight:  Radius.circular(12))
-                ),
-                child:  Obx(
-                    () => Checkbox(
-                  value: controller.selectedItems.contains(index),
-                  onChanged: (bool? value) => controller.toggleItemSelection(index),
-                  activeColor: const Color(0xff981622),
-                  checkColor: Colors.white,
-                ),
-              ),
-              )),
+                  )),
             ],
           ),
         ),
